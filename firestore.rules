@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Buchungen
+    match /buchungen/{buchungId} {
+      // Öffentlicher Zugriff zum Erstellen und Lesen
+      allow create: if true;
+      allow read: if true;  // Erlaubt Verfügbarkeitsprüfung
+      // Bearbeiten und Löschen nur für Admin
+      allow update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Kontaktanfragen
+    match /kontaktanfragen/{anfragenId} {
+      // Öffentlicher Zugriff nur zum Erstellen
+      allow create: if true;
+      // Lesen und Bearbeiten nur für Admin
+      allow read, update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Verfügbare Zeitslots
+    match /verfuegbare_slots/{slotId} {
+      // Öffentlich lesbar und schreibbar für Buchungen
+      allow read, write: if true;
+    }
+    
+    // Admin-Einstellungen
+    match /admin_settings/{settingId} {
+      // Nur Admin hat vollen Zugriff
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+} 
