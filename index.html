@@ -342,13 +342,118 @@
     </main>
 
     <!-- Gebündeltes JavaScript -->
-    <script src="dist/bundle.js"></script>
-    <script type="module" src="js/firebase.js"></script>
-    <script type="module" src="js/auth.js"></script>
-    <script type="module" src="js/login.js"></script>
     <script type="module">
-        import { initializeAuthCheck } from './js/auth.js';
-        document.addEventListener('DOMContentLoaded', initializeAuthCheck);
+        // Firebase Konfiguration und Initialisierung
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKbo3gONVWiATosdfXW3x6Eqy5k39qIcw",
+            authDomain: "mamas-kite-website.firebaseapp.com",
+            projectId: "mamas-kite-website",
+            storageBucket: "mamas-kite-website.firebasestorage.app",
+            messagingSenderId: "492839282588",
+            appId: "1:492839282588:web:d965b4c369f180e751ca59"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Login-Logik
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const loginButton = loginForm.querySelector('button[type="submit"]');
+
+            const showError = (message) => {
+                loginError.textContent = message;
+                loginError.style.display = 'block';
+                loginButton.disabled = false;
+                loginButton.textContent = 'Anmelden';
+            };
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // UI-Feedback
+                loginButton.disabled = true;
+                loginButton.textContent = 'Anmeldung läuft...';
+                loginError.style.display = 'none';
+                
+                try {
+                    console.log('Versuche Anmeldung für:', email);
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    console.log('Anmeldung erfolgreich');
+                    loginError.style.display = 'none';
+                } catch (error) {
+                    console.error('Login-Fehler:', error);
+                    
+                    switch(error.code) {
+                        case 'auth/invalid-email':
+                            showError('Ungültige E-Mail-Adresse');
+                            break;
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                            showError('Ungültige Anmeldedaten');
+                            break;
+                        case 'auth/too-many-requests':
+                            showError('Zu viele Versuche. Bitte warte einen Moment.');
+                            break;
+                        default:
+                            showError('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.');
+                    }
+                }
+            });
+
+            // Admin-Check Logik
+            const checkAdminAccess = async (user) => {
+                if (!user) {
+                    console.log('Kein Benutzer angemeldet');
+                    return false;
+                }
+                
+                try {
+                    console.log('Überprüfe Admin-Status für User:', user.email);
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    const isAdmin = userDoc.exists() && userDoc.data().isAdmin === true;
+                    console.log('Admin-Status:', isAdmin);
+                    return isAdmin;
+                } catch (error) {
+                    console.error('Fehler beim Überprüfen des Admin-Status:', error);
+                    return false;
+                }
+            };
+
+            const updateUIVisibility = (isAdmin) => {
+                const constructionOverlay = document.getElementById('constructionOverlay');
+                if (!constructionOverlay) {
+                    console.error('Overlay-Element nicht gefunden');
+                    return;
+                }
+
+                if (!isAdmin) {
+                    console.log('Zeige Overlay (kein Admin)');
+                    constructionOverlay.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    console.log('Verstecke Overlay (Admin bestätigt)');
+                    constructionOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            };
+
+            onAuthStateChanged(auth, async (user) => {
+                console.log('Auth-Status geändert:', user ? user.email : 'nicht angemeldet');
+                const isAdmin = await checkAdminAccess(user);
+                updateUIVisibility(isAdmin);
+            });
+        });
     </script>
 </body>
 </html> 
