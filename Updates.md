@@ -61,6 +61,12 @@
 - Erklärungen zu Kinesiologie, Trauma und Entkopplung integriert
 - Detaillierte Methodenbeschreibung implementiert
 
+## 26.12.2023
+- GitHub Pages Deployment konfiguriert
+- "Under Construction" Overlay hinzugefügt
+- Admin-only Zugriffsbeschränkung implementiert
+- Domain www.dsm-kite.de eingerichtet
+
 ## Nächste Schritte
 - Implementierung der E-Mail-Benachrichtigungen nach Domain-Einrichtung
 - Vervollständigung der Admin-Funktionalitäten

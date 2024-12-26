@@ -6,8 +6,40 @@
     <title>KiTE® Method - Dani Sieck-Mitzloff</title>
     <link rel="stylesheet" href="css/style.css">
     <meta name="description" content="KiTE® Methode">
+    <style>
+        #constructionOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+        }
+        #constructionOverlay h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #constructionOverlay p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
+    <div id="constructionOverlay">
+        <h1>Website in Entwicklung</h1>
+        <p>Diese Website befindet sich derzeit im Aufbau.</p>
+        <p>Der Zugang ist momentan nur für Administratoren möglich.</p>
+    </div>
     <header>
         <nav class="main-nav">
             <div class="nav-brand">
@@ -243,7 +275,7 @@
 
                         <div class="form-group checkbox-group">
                             <input type="checkbox" id="privacy" name="privacy" required>
-                            <label for="privacy">Ich stimme der Verarbeitung meiner Daten gemäß der Datenschutzerkl��rung zu *</label>
+                            <label for="privacy">Ich stimme der Verarbeitung meiner Daten gemäß der Datenschutzerklärung zu *</label>
                         </div>
                         
                         <button type="submit" class="submit-button">Nachricht senden</button>
@@ -275,5 +307,11 @@
 
     <!-- Gebündeltes JavaScript -->
     <script src="dist/bundle.js"></script>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        import { initializeAuthCheck } from './js/auth.js';
+        document.addEventListener('DOMContentLoaded', initializeAuthCheck);
+    </script>
 </body>
 </html> 
