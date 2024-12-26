@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiTE® Method - Dani Sieck-Mitzloff</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="KiTE® Methode">
+    <style>
+        #constructionOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+        }
+        #constructionOverlay h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #constructionOverlay p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        #loginForm {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        #loginForm input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #loginForm button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #loginForm button:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="constructionOverlay">
+        <h1>Website in Entwicklung</h1>
+        <p>Diese Website befindet sich derzeit im Aufbau.</p>
+        <p>Der Zugang ist momentan nur für Administratoren möglich.</p>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="E-Mail" required>
+            <input type="password" id="loginPassword" placeholder="Passwort" required>
+            <button type="submit">Anmelden</button>
+            <p class="error-message" id="loginError"></p>
+        </form>
+    </div>
+    <header>
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <a href="/">KiTE® Methode</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#methode">Methode</a></li>
+                <li><a href="#leistungen">Meine Leistungen</a></li>
+                <li><a href="#termine">Termine</a></li>
+                <li><a href="#uber-mich">Über mich</a></li>
+                <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+            <button class="mobile-menu" aria-label="Menü öffnen">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" style="background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('assets/images/rainbow-4047523_1920.jpg') no-repeat center center; background-size: cover;">
+            <div class="hero-content">
+                <h1>Willkommen bei der KiTE® Methode</h1>
+                <p>Entdecke den Weg zu innerer Balance und Heilung mit der Kinesiologischen Trauma Entkopplung</p>
+                <a href="#termine" class="cta-button">Termin buchen</a>
+            </div>
+        </section>
+
+        <section id="uber-uns">
+            <h2>Über die KiTE® Methode</h2>
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <p>Die KiTE® Methode (Kinesiologische Trauma Entkopplung) ist ein ganzheitlicher Ansatz zur Behandlung von körperlichen und seelischen Blockaden. Viele Abläufe in unserem Körper laufen instinktiv, automatisch und somit unbewusst ab. Wir können bewusst unseren Arm bewegen, aber nicht unsere Organe beeinflussen.</p>
+                    <p>Blockaden melden sich zu Beginn oft durch Muskelverhärtungen, Sehnenverkürzungen und Schiefstellungen, bevor in der Folge Krankheiten entstehen. In der KiTE® Methode werden solche Blockaden gefunden und über entsprechende Reflexpunkte an den Füßen oder Händen behandelt und gelöst.</p>
+                    <p>Das Besondere an der Methode ist, dass der Klient sich nicht bewusst an das belastende Erlebnis erinnern muss. Der Körper hat alles Erlebte in jeder Zelle gespeichert und gibt es in der Behandlung zur Bearbeitung frei.</p>
+                </div>
+                <div class="image-content">
+                    <img src="assets/images/photo_2024-12-25_21-04-19.jpg" alt="KiTE® Methode Behandlung" class="feature-image">
+                </div>
+            </div>
+        </section>
+
+        <section id="methode">
+            <h2>Die KiTE® Methode</h2>
+            <div class="method-grid">
+                <div class="method-card">
+                    <div class="method-icon"><i class="icon-star"></i></div>
+                    <h3>Kinesiologie</h3>
+                    <p>Griechisch: Die Lehre der Bewegung</p>
+                    <p>Kinesiologie ist ein alternativ-medizinisches Diagnose- und Behandlungskonzept aus dem Bereich der Körpertherapie. Als Diagnoseverfahren wird ein Muskel-Reflextest eingesetzt. Dieser Test dient als "Biofeedback-System", um Blockaden im Körper aufzuspüren.</p>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon"><i class="icon-target"></i></div>
+                    <h3>Trauma</h3>
+                    <p>Griechisch: Wunde</p>
+                    <p>Als Trauma bezeichnet man in der Medizin oder Biologie eine Schädigung, Verletzung oder Wunde, die durch Gewalt von außen entstand. Seelische Verletzungen, Ereignisse, Konflikte und deren Folgen werden in der Psychologie ebenfalls als Trauma bezeichnet.</p>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon"><i class="icon-leaf"></i></div>
+                    <h3>Entkopplung</h3>
+                    <p>In jeder Sekunde, die wir erleben, speichert unser Gehirn die entsprechenden Erfahrungen ab. Über entsprechende Reflexpunkte werden Erlebnisse und Emotionen behandelt und zwischen Körper und Gehirn entkoppelt.</p>
+                </div>
+            </div>
+            <div class="method-details">
+                <h3>Die KiTE® Methode im Detail</h3>
+                <div class="method-explanation">
+                    <p>Im Idealfall funktioniert unsere Selbstregulation so gut, dass wir nach belastenden Erlebnissen wieder alleine in unsere Mitte finden. Je nach Häufigkeit und Intensität passiert es aber, dass der Mensch nicht von allein in dieses Gleichgewicht zurückfindet. Durch den Versuch der Kompensation werden vom Körper Symptome entwickelt.</p>
+                    <p>In der KiTE® Methode wird über das Drehen der Füße oder Hände ein Kontakt zum Körper und somit zur unterbewussten Muskulatur und deren Reflexen aufgenommen. Blockaden werden deutlich durch eine Rückkopplung angezeigt und können durch Berühren bestimmter Reflexpunkte an den Füßen oder Händen entkoppelt werden.</p>
+                    <p>Das Schöne ist, dass der Klient sich nicht bewusst an das belastende Erlebnis erinnern muss, denn der Körper hat alles Erlebte in jeder Zelle gespeichert und gibt es in der Behandlung zur Bearbeitung frei.</p>
+                </div>
+            </div>
+        </section>
+
+            <div class="pricing-section">
+                <h3>KiTE® Sitzungen</h3>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h4>Einzelsitzung</h4>
+                        <div class="price">75€</div>
+                        <div class="duration">60 Minuten</div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <h4>Erweiterte Sitzung</h4>
+                        <div class="price">100€</div>
+                        <div class="duration">90 Minuten</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="termine" class="booking-section">
+            <div class="container">
+                <h2>Terminbuchung</h2>
+                <div class="booking-steps">
+                    <div class="booking-step-container" id="bookingStep1">
+                        <h3>KiTE® Buchung</h3>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <button class="prev-month">&lt;</button>
+                                <span id="currentMonth">Oktober 2023</span>
+                                <button class="next-month">&gt;</button>
+                            </div>
+                            <div id="bookingCalendar" class="calendar-grid">
+                                <!-- Kalendertage werden dynamisch eingefügt -->
+                            </div>
+                            <div id="timeSlots" class="time-slots">
+                                <div class="time-slots-group">
+                                    <h4>Vormittag</h4>
+                                    <div class="time-slots-grid">
+                                        <div class="time-slot">
+                                            <div class="time">10:00</div>
+                                            <div class="duration">90 Minuten</div>
+                                        </div>
+                                        <div class="time-slot">
+                                            <div class="time">11:00</div>
+                                            <div class="duration">90 Minuten</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="time-slots-group">
+                                    <h4>Nachmittag</h4>
+                                    <div class="time-slots-grid">
+                                        <div class="time-slot">
+                                            <div class="time">13:00</div>
+                                            <div class="duration">90 Minuten</div>
+                                        </div>
+                                        <div class="time-slot">
+                                            <div class="time">14:00</div>
+                                            <div class="duration">90 Minuten</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-navigation">
+                            <button class="next-step" data-next="2">Weiter zu den persönlichen Daten</button>
+                        </div>
+                    </div>
+
+                    <!-- Schritt 2: Persönliche Daten -->
+                    <div class="booking-step-container hidden" id="bookingStep2">
+                        <h3>Persönliche Daten</h3>
+                        <div id="bookingSummary" class="booking-summary">
+                            <!-- Zusammenfassung wird dynamisch eingefügt -->
+                        </div>
+                        <form id="bookingForm" class="booking-form">
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-Mail *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Telefon</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="notes">Anmerkungen</label>
+                                <textarea id="notes" name="notes"></textarea>
+                            </div>
+                            <div class="step-navigation">
+                                <button type="button" class="prev-step" data-prev="1">Zurück</button>
+                                <button type="submit" class="submit-booking">Termin buchen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kontakt">
+            <h2>Kontakt</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Kontaktiere mich</h3>
+                    <p>Haben Sie Fragen? Ich bin für Sie da!</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="icon-location"></i>
+                            <div>
+                                <h4>Adresse</h4>
+                                <p>Daniela Sieck-Mitzloff<br>Johann-Hinrich-Fehrs-Str. 18<br>24623 Großenaspe</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="icon-mail"></i>
+                            <div>
+                                <h4>E-Mail</h4>
+                                <p>info@dsm-kite.de</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Nachricht senden</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="contactName">Name *</label>
+                            <input type="text" id="contactName" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactEmail">E-Mail *</label>
+                            <input type="email" id="contactEmail" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactPhone">Telefon</label>
+                            <input type="tel" id="contactPhone" name="phone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Betreff *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Bitte wählen</option>
+                                <option value="termin">Terminanfrage</option>
+                                <option value="info">Informationsanfrage</option>
+                                <option value="other">Sonstiges</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Ihre Nachricht *</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="privacy" name="privacy" required>
+                            <label for="privacy">Ich stimme der Verarbeitung meiner Daten gemäß der Datenschutzerklärung zu *</label>
+                        </div>
+                        
+                        <button type="submit" class="submit-button">Nachricht senden</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Kontakt</h3>
+                    <p>Email: info@dsm-kite.de</p>
+                    <p>Daniela Sieck-Mitzloff<br>Johann-Hinrich-Fehrs-Str. 18<br>24623 Großenaspe</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul>
+                        <li><a href="/impressum">Impressum</a></li>
+                        <li><a href="/datenschutz">Datenschutz</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 KiTE® Methode. Alle Rechte vorbehalten.</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Gebündeltes JavaScript -->
+    <script type="module">
+        // Firebase Konfiguration und Initialisierung
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKbo3gONVWiATosdfXW3x6Eqy5k39qIcw",
+            authDomain: "mamas-kite-website.firebaseapp.com",
+            projectId: "mamas-kite-website",
+            storageBucket: "mamas-kite-website.firebasestorage.app",
+            messagingSenderId: "492839282588",
+            appId: "1:492839282588:web:d965b4c369f180e751ca59"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Login-Logik
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const loginButton = loginForm.querySelector('button[type="submit"]');
+
+            const showError = (message) => {
+                loginError.textContent = message;
+                loginError.style.display = 'block';
+                loginButton.disabled = false;
+                loginButton.textContent = 'Anmelden';
+            };
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // UI-Feedback
+                loginButton.disabled = true;
+                loginButton.textContent = 'Anmeldung läuft...';
+                loginError.style.display = 'none';
+                
+                try {
+                    console.log('Versuche Anmeldung für:', email);
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    console.log('Anmeldung erfolgreich');
+                    loginError.style.display = 'none';
+                } catch (error) {
+                    console.error('Login-Fehler:', error);
+                    
+                    switch(error.code) {
+                        case 'auth/invalid-email':
+                            showError('Ungültige E-Mail-Adresse');
+                            break;
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                            showError('Ungültige Anmeldedaten');
+                            break;
+                        case 'auth/too-many-requests':
+                            showError('Zu viele Versuche. Bitte warte einen Moment.');
+                            break;
+                        default:
+                            showError('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.');
+                    }
+                }
+            });
+
+            // Admin-Check Logik
+            const checkAdminAccess = async (user) => {
+                if (!user) {
+                    console.log('Kein Benutzer angemeldet');
+                    return false;
+                }
+                
+                try {
+                    console.log('Überprüfe Admin-Status für User:', user.email);
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    const isAdmin = userDoc.exists() && userDoc.data().isAdmin === true;
+                    console.log('Admin-Status:', isAdmin);
+                    return isAdmin;
+                } catch (error) {
+                    console.error('Fehler beim Überprüfen des Admin-Status:', error);
+                    return false;
+                }
+            };
+
+            const updateUIVisibility = (isAdmin) => {
+                const constructionOverlay = document.getElementById('constructionOverlay');
+                if (!constructionOverlay) {
+                    console.error('Overlay-Element nicht gefunden');
+                    return;
+                }
+
+                if (!isAdmin) {
+                    console.log('Zeige Overlay (kein Admin)');
+                    constructionOverlay.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    console.log('Verstecke Overlay (Admin bestätigt)');
+                    constructionOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            };
+
+            onAuthStateChanged(auth, async (user) => {
+                console.log('Auth-Status geändert:', user ? user.email : 'nicht angemeldet');
+                const isAdmin = await checkAdminAccess(user);
+                updateUIVisibility(isAdmin);
+            });
+        });
+    </script>
+</body>
+</html> 
