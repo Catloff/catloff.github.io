@@ -13,7 +13,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -32,6 +32,36 @@
             margin-bottom: 15px;
             color: #666;
         }
+        #loginForm {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        #loginForm input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #loginForm button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #loginForm button:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -39,6 +69,12 @@
         <h1>Website in Entwicklung</h1>
         <p>Diese Website befindet sich derzeit im Aufbau.</p>
         <p>Der Zugang ist momentan nur für Administratoren möglich.</p>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="E-Mail" required>
+            <input type="password" id="loginPassword" placeholder="Passwort" required>
+            <button type="submit">Anmelden</button>
+            <p class="error-message" id="loginError"></p>
+        </form>
     </div>
     <header>
         <nav class="main-nav">
@@ -309,6 +345,7 @@
     <script src="dist/bundle.js"></script>
     <script type="module" src="js/firebase.js"></script>
     <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/login.js"></script>
     <script type="module">
         import { initializeAuthCheck } from './js/auth.js';
         document.addEventListener('DOMContentLoaded', initializeAuthCheck);
