@@ -1,30 +1,12 @@
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
-    entry: './js/main.js',
+    entry: './js/firebase.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
-        publicPath: '/'
-    },
-    devtool: 'source-map',
-    devServer: {
-        static: {
-            directory: path.join(__dirname, '/'),
-        },
-        hot: true,
-        open: true,
-        historyApiFallback: true,
-        port: 8080
-    },
-    optimization: {
-        removeAvailableModules: false,
-        removeEmptyChunks: false,
-        splitChunks: false,
-    },
-    cache: {
-        type: 'filesystem'
+        path: path.resolve(__dirname, 'dist'),
     },
     module: {
         rules: [
@@ -34,11 +16,40 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
-                        cacheDirectory: true
+                        presets: ['@babel/preset-env']
                     }
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new Dotenv(),
+        new CopyWebpackPlugin({
+            patterns: [
+                { 
+                    from: 'index.html',
+                    to: '' 
+                },
+                { 
+                    from: 'css',
+                    to: 'css' 
+                },
+                { 
+                    from: 'assets',
+                    to: 'assets' 
+                },
+                {
+                    from: 'js',
+                    to: 'js',
+                    globOptions: {
+                        ignore: ['**/firebase.js'] // Ignoriere firebase.js da es bereits gebündelt wird
+                    }
+                },
+                {
+                    from: 'CNAME',
+                    to: ''
+                }
+            ]
+        })
+    ]
 }; 

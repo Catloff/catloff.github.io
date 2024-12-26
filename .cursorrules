@@ -1,5 +1,6 @@
 - **Bitte duze mich IMMER**
 - benutze niemals emojis
+- führe git befehle IMMER einzeln nacheinander durch
 - **Document any changes with a timestamp in an `Updates.md` file.** Create this file if it doesn't exist.
 - **Never modify code that is irrelevant to the user's request.** Think carefully before making any changes.
 - **When making changes, consider:**
