@@ -56,6 +56,11 @@
 - Schutz der Admin-Funktionen
 - Validierung aller Benutzereingaben
 
+## 25.12.2023 - Content Updates
+- Neue Texte zur KiTE® Methode hinzugefügt
+- Erklärungen zu Kinesiologie, Trauma und Entkopplung integriert
+- Detaillierte Methodenbeschreibung implementiert
+
 ## Nächste Schritte
 - Implementierung der E-Mail-Benachrichtigungen nach Domain-Einrichtung
 - Vervollständigung der Admin-Funktionalitäten
