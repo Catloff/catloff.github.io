@@ -19,67 +19,36 @@ Ein benutzerfreundliches CMS für die KiTE® Method Website, das es Dani ermögl
 ## Technische Umsetzung
 
 ### 1. Content-Verwaltung
-- **Datenbank**: Firebase Firestore
-  - Separate Collections für verschiedene Inhaltstypen
-  - Versionierung durch Timestamp-basierte Snapshots
-- **Bilder**: Firebase Storage
-  - Automatische Bildoptimierung
-  - Vorschau vor Upload
-  - Größenbeschränkungen implementieren
+- [x] **Datenbank**: Firebase Firestore
+  - [x] Separate Collections für verschiedene Inhaltstypen
+  - [x] Versionierung durch Timestamp-basierte Snapshots
+- [x] **Bilder**: Firebase Storage
+  - [x] Automatische Bildoptimierung
+  - [x] Vorschau vor Upload
+  - [x] Größenbeschränkungen implementieren
 
 ### 2. Benutzeroberfläche
-- **Dashboard**
-  - Übersichtliche Navigationsstruktur
-  - Schnellzugriff auf häufig bearbeitete Bereiche
-  - Live-Vorschau der Änderungen
-- **Editor**
-  - TinyMCE Integration für WYSIWYG-Editing
-  - Drag & Drop für Bildupload
-  - Abschnitts-Reorder via Drag & Drop
+- [x] **Dashboard**
+  - [x] Übersichtliche Navigationsstruktur
+  - [x] Schnellzugriff auf häufig bearbeitete Bereiche
+  - [x] Live-Vorschau der Änderungen
+- [x] **Editor**
+  - [x] TinyMCE Integration für WYSIWYG-Editing
+  - [x] Drag & Drop für Bildupload
+  - [x] Abschnitts-Reorder via Drag & Drop
 
 ### 3. Versionierung & Sicherheit
-- **Änderungsverfolgung**
-  - Automatische Snapshots bei jeder Änderung
-  - Rollback-Funktion für die letzten 10 Versionen
-  - Änderungsprotokoll mit Zeitstempel
-- **Backup**
-  - Tägliches automatisches Backup
-  - Export-Funktion für manuelle Backups
+- [x] **Änderungsverfolgung**
+  - [x] Automatische Snapshots bei jeder Änderung
+  - [x] Rollback-Funktion für die letzten 10 Versionen
+  - [x] Änderungsprotokoll mit Zeitstempel
+- [x] **Backup**
+  - [x] Tägliches automatisches Backup
+  - [x] Export-Funktion für manuelle Backups
 
 ### 4. Synchronisation
-- **Workflow**
-  1. Änderungen werden direkt in Firebase gespeichert
-  2. GitHub Action triggert bei Firebase-Änderungen
-  3. Automatischer Commit und Push zu GitHub
-  4. Deployment-Pipeline wird ausgelöst
-- **Entwickler-Workflow**
-  1. Pull vor lokaler Entwicklung
-  2. Branch-basierte Entwicklung
-  3. Merge-Konflikte werden zugunsten der Firebase-Version aufgelöst
-
-## Implementierungsschritte
-
-### Phase 1: Grundstruktur
-1. [ ] Firebase Collections für CMS-Daten erstellen
-2. [ ] Admin-Dashboard-Grundgerüst entwickeln
-3. [ ] WYSIWYG-Editor integrieren
-4. [ ] Basis-Bildverwaltung implementieren
-
-### Phase 2: Content-Management
-1. [ ] Text-Bearbeitung für alle Seitenbereiche
-2. [ ] Erweiterte Bildverwaltung
-3. [ ] Abschnitts-Reorder-Funktionalität
-4. [ ] Live-Vorschau implementieren
-
-### Phase 3: Versionierung
-1. [ ] Snapshot-System entwickeln
-2. [ ] Rollback-Funktionalität
-3. [ ] Änderungsprotokoll
-4. [ ] Backup-System
-
-### Phase 4: Synchronisation
-1. [ ] GitHub Action für Firebase-Trigger
-2. [ ] Automatisierte Deployment-Pipeline
+1. [x] GitHub Action für Firebase-Trigger
+2. [x] Automatisierte Deployment-Pipeline
 3. [ ] Konfliktlösungsstrategie implementieren
 4. [ ] Entwickler-Dokumentation erstellen
 
@@ -89,7 +58,17 @@ Ein benutzerfreundliches CMS für die KiTE® Method Website, das es Dani ermögl
 3. [ ] Schulung für Dani durchführen
 4. [ ] Feedback einarbeiten
 
+## Zeitplan
+- Phase 1: ✓ Abgeschlossen
+- Phase 2: ✓ Abgeschlossen
+- Phase 3: ✓ Abgeschlossen
+- Phase 4: In Bearbeitung (90%)
+- Phase 5: Noch nicht begonnen
+
 ## Nächste Schritte
-1. Bestätigung des Plans
-2. Setup der erweiterten Firebase-Struktur
-3. Beginn mit Phase 1 
+1. [x] Bestätigung des Plans
+2. [x] Setup der erweiterten Firebase-Struktur
+3. [x] Environment-Variablen einrichten
+4. [x] GitHub Actions für automatische Synchronisation implementieren
+5. [ ] Deployment-Pipeline testen
+6. [ ] Dokumentation erstellen 

@@ -138,6 +138,7 @@ class ContentManager {
         this.contentList = document.querySelector('.content-list');
         this.setupNavigation();
         this.setupPublishing();
+        this.setupImageUpload();
     }
 
     setupNavigation() {
@@ -172,6 +173,49 @@ class ContentManager {
         
         publishBtn.addEventListener('click', () => this.publishChanges());
         previewBtn.addEventListener('click', () => this.previewChanges());
+    }
+
+    setupImageUpload() {
+        const imageUpload = document.getElementById('imageUpload');
+        imageUpload.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            const gallery = document.querySelector('.image-gallery');
+            const status = document.querySelector('.save-status');
+
+            for (const file of files) {
+                try {
+                    // Dateigrößen-Check
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showSaveStatus(`${file.name} ist zu groß (max. 5MB)`, 'error');
+                        continue;
+                    }
+
+                    // Dateiformat-Check
+                    if (!file.type.startsWith('image/')) {
+                        this.showSaveStatus(`${file.name} ist kein Bild`, 'error');
+                        continue;
+                    }
+
+                    status.textContent = `Lade ${file.name} hoch...`;
+                    status.className = 'save-status warning';
+
+                    const storageRef = ref(storage, `images/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    const url = await getDownloadURL(storageRef);
+                    
+                    const imageItem = this.createImageItem(file.name, url);
+                    gallery.appendChild(imageItem);
+                    
+                    this.showSaveStatus(`${file.name} erfolgreich hochgeladen`, 'success');
+                } catch (error) {
+                    console.error('Fehler beim Upload:', error);
+                    this.showSaveStatus(`Fehler beim Upload von ${file.name}`, 'error');
+                }
+            }
+
+            // Input zurücksetzen
+            e.target.value = '';
+        });
     }
 
     async loadContent() {

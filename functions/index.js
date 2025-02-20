@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const fetch = require('node-fetch');
 
 admin.initializeApp();
 
@@ -17,6 +18,80 @@ const transporter = nodemailer.createTransport({
     }
 });
 */
+
+// GitHub Repository Konfiguration
+const GITHUB_REPO = 'yannik-mitzloff/mamas-kite-website';
+const GITHUB_API = 'https://api.github.com';
+
+// Funktion zum Triggern der GitHub Action
+async function triggerGitHubAction(token) {
+    try {
+        const response = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/dispatches`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                event_type: 'firebase-content-update',
+                client_payload: {
+                    timestamp: new Date().toISOString()
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`GitHub API responded with status ${response.status}`);
+        }
+
+        console.log('GitHub Action erfolgreich getriggert');
+        return true;
+    } catch (error) {
+        console.error('Fehler beim Triggern der GitHub Action:', error);
+        throw error;
+    }
+}
+
+// Überwache Änderungen in der CMS-Collection
+exports.onCmsContentChange = functions.firestore
+    .document('cms_content/{contentId}')
+    .onWrite(async (change, context) => {
+        try {
+            const githubToken = functions.config().github.token;
+            await triggerGitHubAction(githubToken);
+        } catch (error) {
+            console.error('Fehler in onCmsContentChange:', error);
+        }
+    });
+
+// Überwache Änderungen in der Seitenstruktur
+exports.onStructureChange = functions.firestore
+    .document('cms_sections/{sectionId}')
+    .onWrite(async (change, context) => {
+        try {
+            const githubToken = functions.config().github.token;
+            await triggerGitHubAction(githubToken);
+        } catch (error) {
+            console.error('Fehler in onStructureChange:', error);
+        }
+    });
+
+// Überwache Bildänderungen
+exports.onStorageChange = functions.storage
+    .object()
+    .onFinalize(async (object) => {
+        if (!object.name.startsWith('images/')) {
+            return null;
+        }
+
+        try {
+            const githubToken = functions.config().github.token;
+            await triggerGitHubAction(githubToken);
+        } catch (error) {
+            console.error('Fehler in onStorageChange:', error);
+        }
+    });
 
 // Funktion zum Speichern der Buchung
 exports.handleNewBooking = functions.firestore
