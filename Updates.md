@@ -1,6 +1,6 @@
 # Projekt-Updates
 
-## 2024-01-20
+## 2024-12-24
 ### Website-Grundstruktur
 - Initialisierung des Projekts
 - Erstellung der grundlegenden Ordnerstruktur
@@ -71,4 +71,13 @@
 - Implementierung der E-Mail-Benachrichtigungen nach Domain-Einrichtung
 - Vervollständigung der Admin-Funktionalitäten
 - Einrichtung des Deployment-Prozesses
-- Implementierung von Unit Tests 
+- Implementierung von Unit Tests
+
+## 2024-01-09
+- Content Management System (CMS) implementiert
+  - Admin-Dashboard für einfache Inhaltsverwaltung
+  - WYSIWYG-Editor für Texte
+  - Bildverwaltung mit Upload/Delete
+  - Versionierung von Änderungen
+  - Abschnitts-Reorder-Funktionalität
+  - Firebase-GitHub Synchronisation 
