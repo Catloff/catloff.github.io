@@ -4,19 +4,31 @@ on:
   # Wird durch Firebase Function getriggert
   repository_dispatch:
     types: [firebase-content-update]
+  # Manuelles Auslösen erlauben
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   sync-content:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install Main Dependencies
+        run: npm ci
+
+      - name: Install Script Dependencies
+        working-directory: scripts
         run: npm ci
 
       - name: Configure Git
@@ -26,19 +38,18 @@ jobs:
 
       - name: Fetch Content from Firebase
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          # Hier kommt später der Content-Sync-Script
-          echo "Content sync will be implemented"
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        working-directory: scripts
+        run: npm run sync
 
       - name: Commit Changes
         run: |
-          git add .
+          git add content/
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update content from CMS [skip ci]" && git push)
 
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Trigger Deploy Workflow
+        if: success()
+        uses: peter-evans/repository-dispatch@v2
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          channelId: live 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: content-updated 

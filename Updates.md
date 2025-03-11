@@ -222,3 +222,34 @@ Mit der Fertigstellung dieser Schritte wird das Projekt erfolgreich abgeschlosse
 - Backup-Strategie für regelmäßige Sicherungen implementieren
 
 Mit der Fertigstellung des CMS erreicht das Projekt einen wichtigen Meilenstein. Nach dem Merge in den main-Branch und der Übergabe an Dani kann die Website offiziell gelauncht werden. 
+
+## CMS-Konfiguration (11.03.2024 15:32)
+
+Das CMS-System wurde mit folgenden Anpassungen konfiguriert:
+
+1. **Webpack-Konfiguration angepasst**:
+   - Platzhalter in HTML-Dateien (wie `%TINYMCE_API_KEY%`) werden jetzt durch entsprechende Umgebungsvariablen ersetzt
+   - Betrifft sowohl index.html als auch admin.html
+
+2. **Firebase Sync Script erstellt**:
+   - Neues Script `scripts/firebase-sync.js` zum Synchronisieren von Inhalten aus Firebase
+   - Speichert Daten im `content`-Verzeichnis als JSON-Dateien
+
+3. **GitHub Action Workflow aktualisiert**:
+   - Workflow `.github/workflows/firebase-sync.yml` verwendet jetzt das neue Sync-Script
+   - Kann manuell oder durch Firebase-Events ausgelöst werden
+   - Triggert nach erfolgreicher Synchronisierung einen neuen Build
+
+4. **TinyMCE-Integration korrigiert**:
+   - API-Key wird jetzt korrekt aus den Umgebungsvariablen in admin.html eingesetzt
+
+Diese Änderungen ermöglichen ein vollständiges CMS-Workflow:
+1. Inhalte werden im Admin-Dashboard (admin.html) bearbeitet
+2. Änderungen werden in Firebase gespeichert
+3. Ein Trigger löst den GitHub Action aus
+4. Inhalte werden aus Firebase synchronisiert und ins Repository geschrieben
+5. Die Website wird neu gebaut und bereitgestellt
+
+### Hinweise zur Nutzung
+- Um das CMS manuell zu aktualisieren, kann der "Firebase CMS Sync"-Workflow im GitHub Actions-Tab manuell ausgelöst werden
+- Alle CMS-relevanten Geheimnisse sind als GitHub Secrets konfiguriert

@@ -1,15 +1,17 @@
 {
-  "name": "scripts",
+  "name": "kite-method-scripts",
   "version": "1.0.0",
-  "main": "create-test-content.js",
+  "description": "Utility scripts for KiTE Method Website",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "make-admin": "node make-admin.js",
+    "create-test-content": "node create-test-content.js",
+    "test-structure": "node test-structure-changes.js",
+    "sync": "node firebase-sync.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Dani Sieck-Mitzloff",
+  "license": "UNLICENSED",
   "dependencies": {
-    "firebase-admin": "^13.1.0"
+    "firebase-admin": "^11.10.1"
   }
 }

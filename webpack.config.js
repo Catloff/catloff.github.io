@@ -1,6 +1,7 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
 
 module.exports = {
     entry: './js/firebase.js',
@@ -28,7 +29,21 @@ module.exports = {
             patterns: [
                 { 
                     from: 'index.html',
-                    to: '' 
+                    to: '',
+                    transform(content) {
+                        return content.toString().replace(/%(.+)%/g, (match, p1) => {
+                            return process.env[p1] || match;
+                        });
+                    }
+                },
+                { 
+                    from: 'admin.html',
+                    to: '',
+                    transform(content) {
+                        return content.toString().replace(/%(.+)%/g, (match, p1) => {
+                            return process.env[p1] || match;
+                        });
+                    }
                 },
                 { 
                     from: 'css',
