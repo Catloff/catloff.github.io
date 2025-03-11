@@ -1,0 +1,44 @@
+name: Firebase CMS Sync
+
+on:
+  # Wird durch Firebase Function getriggert
+  repository_dispatch:
+    types: [firebase-content-update]
+
+jobs:
+  sync-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+
+      - name: Fetch Content from Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          # Hier kommt später der Content-Sync-Script
+          echo "Content sync will be implemented"
+
+      - name: Commit Changes
+        run: |
+          git add .
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update content from CMS [skip ci]" && git push)
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live 
