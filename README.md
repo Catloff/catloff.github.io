@@ -69,4 +69,8 @@ Diese Website ist die offizielle Präsenz der KiTE® Method Praxis von Dani Siec
 
 ## Lizenz
 
-Alle Rechte vorbehalten. © 2024 KiTE® Method 
+Alle Rechte vorbehalten. © 2024 KiTE® Method
+
+## Deployment-Test
+
+Aktualisierung zur Überprüfung des Deployment-Prozesses 
