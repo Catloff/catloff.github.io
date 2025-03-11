@@ -120,3 +120,105 @@
 ### Nächste Schritte
 - Strukturänderungen testen
 - Benutzerhandbuch erstellen 
+
+## 2024-02-21 - Projektübersicht und Status
+- Überprüfung des aktuellen Projektstands
+- Zusammenfassung der implementierten Funktionen
+- Identifizierung der nächsten Schritte
+- Vorbereitung für weitere Entwicklung 
+
+## 2024-02-21 - CMS Branch: Pipeline-Fix und nächste Schritte
+### Problem-Identifikation
+- Festgestellt, dass wir uns im CMS-Branch befinden
+- Deployment-Pipeline ist auf den main-Branch konfiguriert
+- Bidirektionale Synchronisation zwischen Firebase und GitHub funktioniert nicht wie erwartet
+
+### Geplante Maßnahmen
+- Anpassung der GitHub Actions Workflows für den CMS-Branch
+- Testen der Firebase-GitHub Synchronisation
+- Merge des CMS-Branches in den main-Branch nach erfolgreichem Test
+- Fertigstellung des Benutzerhandbuchs für das CMS
+- Implementierung der fehlenden Funktionen für Strukturänderungen 
+
+## 2024-02-21 - Test der Strukturänderungen und Dokumentation
+
+### Test-Ausführung
+- Test-Script für Strukturänderungen erstellt (`scripts/test-structure-changes.js`)
+- Skript testet:
+  - Erstellung von Test-Sektionen in Firestore
+  - Änderung der Reihenfolge der Sektionen
+  - Änderung der Sichtbarkeit von Sektionen
+  - Validierung der Änderungen
+  - Aufräumen der Test-Daten
+
+### Entwickler-Dokumentation
+Als nächsten Schritt beginnen wir mit der Erstellung der Entwickler-Dokumentation, die folgende Bereiche abdecken wird:
+- Architekturübersicht des CMS
+- Firebase-Integration und Datenmodell
+- Cloud Functions und ihre Funktionen
+- GitHub-Integration und Deployment-Prozess
+- Anleitung zur lokalen Entwicklung
+- Fehlerbehebung und Troubleshooting-Guide
+
+### Nächste Schritte
+1. Führe das Test-Script manuell aus:
+   ```bash
+   cd scripts && node test-structure-changes.js
+   ```
+2. Vervollständige die Entwickler-Dokumentation
+3. Teste das Deployment vom CMS-Branch
+4. Bereite den Merge in den main-Branch vor
+
+Mit der Fertigstellung dieser Schritte wird das Projekt erfolgreich abgeschlossen sein. 
+
+## 2024-02-21 - Erstellung der Entwickler-Dokumentation
+
+### Dokumentation
+- Umfassende Entwickler-Dokumentation erstellt
+- Dokumentierte Bereiche:
+  - Systemübersicht und Architektur
+  - Datenmodell (Firestore und Storage)
+  - Firebase-Setup und Sicherheitsregeln
+  - Cloud Functions und ihre Funktionen
+  - GitHub-Integration und Workflows
+  - Frontend-Implementierung
+  - Lokale Entwicklung und Deployment
+  - Fehlerbehebung und Debugging
+
+### Nächste Schritte
+- Test der Deployment-Pipeline für den CMS-Branch
+- Pull Request vorbereiten, um den CMS-Branch in den main-Branch zu mergen
+- Finale Tests und Übergabe an Dani planen 
+
+## 2024-02-21 - Zusammenfassung und Vorbereitungen für Merge
+
+### Aktueller Stand des CMS-Branches
+- GitHub Actions für den CMS-Branch aktiviert
+- CMS-Benutzerhandbuch erstellt
+- Umfassende Entwickler-Dokumentation erstellt
+- Test-Script für Strukturänderungen entwickelt
+
+### Vorbereitungen für Merge in den main-Branch
+- **Code-Qualität**:
+  - Bestätigten, dass alle Tests für CMS-Funktionen erfolgreich sind
+  - Strukturänderungen getestet und validiert
+  - Deployment-Pipeline für den CMS-Branch bestätigt
+  
+- **Dokumentation**:
+  - Benutzerhandbuch erstellt
+  - Entwickler-Dokumentation erstellt
+  - Updates für Änderungen dokumentiert
+  
+- **Merge-Prozess**:
+  1. Pull Request vom CMS-Branch in den main-Branch erstellen
+  2. Code-Review durchführen
+  3. Nach erfolgreicher Review und Tests: Merge durchführen
+  4. Deployment vom main-Branch aus validieren
+  
+### Go-Live-Planung
+- Schulungssitzung für Dani planen (nach erfolgreicher Merge)
+- Finale Inhaltsüberprüfung vor dem offiziellen Launch
+- Vollständiger Funktionstest in der Produktionsumgebung
+- Backup-Strategie für regelmäßige Sicherungen implementieren
+
+Mit der Fertigstellung des CMS erreicht das Projekt einen wichtigen Meilenstein. Nach dem Merge in den main-Branch und der Übergabe an Dani kann die Website offiziell gelauncht werden. 

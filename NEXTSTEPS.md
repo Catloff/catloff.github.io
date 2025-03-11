@@ -50,11 +50,11 @@ Ein benutzerfreundliches CMS für die KiTE® Method Website, das es Dani ermögl
 1. [x] GitHub Action für Firebase-Trigger
 2. [x] Automatisierte Deployment-Pipeline
 3. [ ] Konfliktlösungsstrategie implementieren
-4. [ ] Entwickler-Dokumentation erstellen
+4. [x] Entwickler-Dokumentation erstellen
 
 ### Phase 5: Testing & Schulung
 1. [ ] Umfassende Tests aller Funktionen
-2. [ ] Benutzerhandbuch erstellen
+2. [x] Benutzerhandbuch erstellen
 3. [ ] Schulung für Dani durchführen
 4. [ ] Feedback einarbeiten
 
@@ -71,4 +71,4 @@ Ein benutzerfreundliches CMS für die KiTE® Method Website, das es Dani ermögl
 3. [x] Environment-Variablen einrichten
 4. [x] GitHub Actions für automatische Synchronisation implementieren
 5. [ ] Deployment-Pipeline testen
-6. [ ] Dokumentation erstellen 
+6. [x] Dokumentation erstellen 
