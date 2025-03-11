@@ -253,3 +253,28 @@ Diese Änderungen ermöglichen ein vollständiges CMS-Workflow:
 ### Hinweise zur Nutzung
 - Um das CMS manuell zu aktualisieren, kann der "Firebase CMS Sync"-Workflow im GitHub Actions-Tab manuell ausgelöst werden
 - Alle CMS-relevanten Geheimnisse sind als GitHub Secrets konfiguriert
+
+## GitHub Actions-Workflow-Fix (11.03.2024 15:50)
+
+### Problem
+Der GitHub Actions-Workflow "Deploy to GitHub Pages" funktionierte nicht korrekt, da die Umgebungsvariablen nicht richtig an den Build-Prozess übergeben wurden. Das führte dazu, dass:
+- Die Firebase-Konfiguration fehlte
+- Der TinyMCE-API-Key nicht verfügbar war
+- Das CMS nicht ordnungsgemäß funktionierte
+
+### Lösung
+Der Workflow wurde wie folgt verbessert:
+1. **Explizite .env-Datei-Erstellung**: Ein neuer Schritt erstellt nun eine physische .env-Datei mit allen Werten aus den GitHub Secrets
+2. **TINYMCE_API_KEY hinzugefügt**: Der TinyMCE-API-Key wurde als Umgebungsvariable für den Build-Prozess hinzugefügt
+3. **Verbessertes Umgebungsvariablen-Handling**: Die Umgebungsvariablen werden jetzt sowohl über die .env-Datei als auch direkt für den Build-Prozess bereitgestellt
+
+Diese Änderungen sollten sicherstellen, dass:
+- Das CMS ordnungsgemäß funktioniert
+- Die Firebase-Integration einwandfrei läuft
+- Der TinyMCE-Editor im Admin-Dashboard korrekt geladen wird
+
+### Testvorgang
+Nach dem Commit und Push dieser Änderungen sollte:
+1. Der GitHub Actions-Workflow ausgelöst werden
+2. Die Website mit allen erforderlichen Konfigurationen gebaut werden
+3. Die Website auf dsm-kite.de vollständig funktionsfähig sein, einschließlich CMS
