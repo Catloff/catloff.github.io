@@ -222,3 +222,5 @@ Mit der Fertigstellung dieser Schritte wird das Projekt erfolgreich abgeschlosse
 - Backup-Strategie für regelmäßige Sicherungen implementieren
 
 Mit der Fertigstellung des CMS erreicht das Projekt einen wichtigen Meilenstein. Nach dem Merge in den main-Branch und der Übergabe an Dani kann die Website offiziell gelauncht werden. 
+
+Deploy
