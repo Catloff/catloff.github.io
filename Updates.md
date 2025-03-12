@@ -278,3 +278,12 @@ Nach dem Commit und Push dieser Änderungen sollte:
 1. Der GitHub Actions-Workflow ausgelöst werden
 2. Die Website mit allen erforderlichen Konfigurationen gebaut werden
 3. Die Website auf dsm-kite.de vollständig funktionsfähig sein, einschließlich CMS
+
+## 11.03.2024, 23:30 Uhr - Verbessertes Debugging für Firebase-Konfiguration
+
+- Logging hinzugefügt, um Vorhandensein der Firebase-Umgebungsvariablen zu überprüfen
+- Fallback-Werte für Firebase-Konfiguration implementiert, um Fehler bei fehlenden Werten zu vermeiden
+- Try-Catch-Block hinzugefügt, um robuster mit Initialisierungsfehlern umzugehen
+- Verbesserte Fehlerbehandlung, um mehr Informationen über mögliche Probleme zu sammeln
+
+Diese Änderungen sollen helfen, Probleme mit der Firebase-Konfiguration im GitHub Actions Build besser zu diagnostizieren. Die Änderungen stellen sicher, dass die Anwendung nicht abstürzt, wenn einige Firebase-Konfigurationswerte fehlen, und geben klare Fehlermeldungen aus.
