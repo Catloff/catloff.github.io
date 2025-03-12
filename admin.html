@@ -7,7 +7,19 @@
     <!-- Fix: GitHub Actions Build mit Firebase-Konfiguration -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin.css">
-    <!-- TinyMCE -->
+    <!-- TinyMCE - Direkter API Key oder Fallback auf Platzhalter für spätere Ersetzung -->
+    <script>
+        // Falls TinyMCE fehlt, kann dies ein Hinweis auf Probleme mit dem API-Key sein
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (!window.tinymce) {
+                    console.error('TinyMCE wurde nicht geladen! API-Key könnte fehlen oder ungültig sein.');
+                    document.getElementById('loginError').textContent = 
+                        'Fehler: Editor-Komponente konnte nicht geladen werden. Bitte kontaktieren Sie den Administrator.';
+                }
+            }, 2000);
+        });
+    </script>
     <script src="https://cdn.tiny.cloud/1/%TINYMCE_API_KEY%/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>

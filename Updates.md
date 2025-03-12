@@ -287,3 +287,12 @@ Nach dem Commit und Push dieser Änderungen sollte:
 - Verbesserte Fehlerbehandlung, um mehr Informationen über mögliche Probleme zu sammeln
 
 Diese Änderungen sollen helfen, Probleme mit der Firebase-Konfiguration im GitHub Actions Build besser zu diagnostizieren. Die Änderungen stellen sicher, dass die Anwendung nicht abstürzt, wenn einige Firebase-Konfigurationswerte fehlen, und geben klare Fehlermeldungen aus.
+
+## 11.03.2024, 23:50 Uhr - Verbesserte TinyMCE-Integration in admin.html
+
+- JavaScript-Fehlerbehandlung für TinyMCE-Integration hinzugefügt
+- Fehlerdiagnose, falls TinyMCE nicht korrekt geladen wird
+- Benutzerfreundliche Fehlermeldung, wenn der API-Key fehlt oder ungültig ist
+- Kommentare verbessert, um den Zweck des TinyMCE-Scripts klarer zu machen
+
+Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel besser zu diagnostizieren. Mit der verbesserten Fehlerbehandlung werden Benutzer über potenzielle Probleme mit dem TinyMCE API-Key informiert und erhalten eine klare Fehlermeldung.
