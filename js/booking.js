@@ -196,11 +196,15 @@ export default class BookingSystem {
             calendar.appendChild(emptyDay);
         }
 
+        const availableDaysSet = await this.getMonthlyAvailability(this.currentMonth);
+        console.log('Verfügbarkeit für Monat geladen.');
+
         for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
             const currentDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
+            const currentDateStr = currentDate.toISOString().split('T')[0];
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
-            dayElement.dataset.date = currentDate.toISOString().split('T')[0];
+            dayElement.dataset.date = currentDateStr;
 
             const dayContent = document.createElement('div');
             dayContent.className = 'day-content';
@@ -208,16 +212,14 @@ export default class BookingSystem {
             dayElement.appendChild(dayContent);
             
             let isDisabled = false;
+            let isAvailable = false;
+
             if (currentDate < today) {
                 isDisabled = true;
             } else {
-                try {
-                    const slotsForDay = await this.getAvailableSlotsForDay(currentDate);
-                    if (slotsForDay.length === 0) {
-                        isDisabled = true; 
-                    }
-                } catch (error) {
-                    console.error(`Fehler beim Prüfen der Slots für ${currentDate.toLocaleDateString()}:`, error);
+                if (availableDaysSet.has(currentDateStr)) {
+                    isAvailable = true;
+                } else {
                     isDisabled = true;
                 }
             }
@@ -225,6 +227,9 @@ export default class BookingSystem {
             if (isDisabled) {
                 dayElement.classList.add('disabled');
             } else {
+                if (isAvailable) {
+                    dayElement.classList.add('available');
+                }
                 dayElement.addEventListener('click', () => {
                     this.selectDate(currentDate, dayElement);
                 });
@@ -240,12 +245,40 @@ export default class BookingSystem {
             calendar.appendChild(emptyDay);
         }
         
-        console.log('Kalender-Grid neu aufgebaut.');
+        console.log('Kalender-Grid neu aufgebaut mit Verfügbarkeitsprüfung.');
         
         this.selectedDate = null;
         this.selectedTime = null;
         document.getElementById('timeSlots').innerHTML = '';
         this.disableNextButton();
+    }
+
+    async getMonthlyAvailability(monthDate) {
+        console.log('Lade Monatsverfügbarkeit für:', monthDate.toLocaleDateString());
+        const availableDays = new Set();
+        
+        const firstDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+        const lastDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+
+        try {
+            const q = query(
+                collection(db, 'verfuegbare_slots'),
+                where('datum', '>=', customStartOfDay(firstDayOfMonth)),
+                where('datum', '<=', customEndOfDay(lastDayOfMonth))
+            );
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                const slotData = doc.data();
+                if (slotData.datum) {
+                    const dateStr = slotData.datum.toDate().toISOString().split('T')[0];
+                    availableDays.add(dateStr);
+                }
+            });
+            console.log('Tage mit verfügbaren Slots im Monat:', availableDays);
+        } catch (error) {
+            console.error('Fehler beim Laden der Monatsverfügbarkeit:', error);
+        }
+        return availableDays;
     }
 
     async getAvailableSlots(startDate, endDate) {
