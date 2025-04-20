@@ -1,5 +1,14 @@
 # Projekt-Updates
 
+## {Datum} - Anpassungen Buchungsprozess
+- **Ziel:** UI-Verbesserung (Kundenansicht) und zusätzliche Info für Admin (Mama).
+- **Frontend (`js/booking.js`):**
+    - Dauer (120 Minuten) aus der Buchungszusammenfassung (`#bookingSummary`) entfernt, um Kunden nicht zu verwirren.
+- **Backend (`functions/index.js` - handleNewBooking):**
+    - Zählt jetzt vorherige Buchungen des Kunden (basierend auf E-Mail) via Firestore Query.
+    - Fügt den Kundenstatus ("Erstbuchung" oder "Folgebuchung (X vorherige)") zur Admin-Benachrichtigungs-E-Mail hinzu.
+- **Nächste Schritte:** Firebase Functions erneut deployen, um Backend-Änderung live zu schalten.
+
 ## {Datum} - CMS Entfernung & Bereinigung
 - Komplettes CMS-System entfernt, um Komplexität zu reduzieren und Fokus auf Kernfunktionen (Info, Buchung) zu legen.
 - `admin.html` gelöscht.
@@ -315,3 +324,25 @@ Diese Änderungen sollen helfen, Probleme mit der Firebase-Konfiguration im GitH
 - Kommentare verbessert, um den Zweck des TinyMCE-Scripts klarer zu machen
 
 Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel besser zu diagnostizieren. Mit der verbesserten Fehlerbehandlung werden Benutzer über potenzielle Probleme mit dem TinyMCE API-Key informiert und erhalten eine klare Fehlermeldung.
+
+## {Datum} - Konfiguration Terminbuchung (Backend)
+- **Ziel:** E-Mail-Benachrichtigung bei neuer Buchungsanfrage an Admin und Kunde.
+- **Cloud Functions (`functions/index.js`):**
+    - `nodemailer`-Abhängigkeit in `functions/package.json` hinzugefügt.
+    - `handleNewBooking` überarbeitet:
+        - Automatisches Setzen des Status auf `confirmed` entfernt.
+        - Nodemailer-Transport konfiguriert (liest SMTP-Zugangsdaten aus Firebase Environment Config: `email.user`, `email.pass`, `email.host`, `email.port`).
+        - Sendet E-Mail-Benachrichtigung über neue Anfrage an Admin (Mama).
+        - Sendet E-Mail-Bestätigung über Eingang der Anfrage an Kunden (falls E-Mail angegeben).
+- **Firestore Rules (`firestore.rules`):**
+    - Regeln für `buchungen` angepasst:
+        - `create`: Erlaubt für jeden (auch anonym), erzwingt `status: 'angefragt'` und prüft notwendige Felder (Datum, Zeit, Name, E-Mail).
+        - `read`: Erlaubt für jeden.
+        - `update`/`delete`: Nur für Admins erlaubt (via `isAdmin()` Hilfsfunktion).
+    - Regeln für `verfuegbare_slots` angepasst: `read` für jeden, `write` nur für Admins.
+    - Regeln für `kontaktanfragen` angepasst: `create` für jeden (prüft Name/E-Mail), `read`/`update`/`delete` nur für Admins.
+    - `isAdmin()` Hilfsfunktion hinzugefügt (prüft `isAdmin`-Flag im `/users/{userId}`-Dokument).
+- **Nächste Schritte:**
+    - Firebase Environment Configuration für E-Mail setzen.
+    - Firebase Functions deployen.
+    - Frontend-Logik für Slot-Berechnung und Buchung implementieren (`js/booking.js`).

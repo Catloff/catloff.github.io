@@ -5,6 +5,10 @@ service cloud.firestore {
     match /users/{userId} {
       // Jeder authentifizierte Benutzer kann seinen eigenen Eintrag lesen
       allow read: if request.auth != null;
+      // Admin-Check (Beispiel: prüft ein Flag im User-Dokument)
+      function isAdmin(userId) {
+          return request.auth != null && get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
+      }
     }
 
     // CMS Collections (entfernt)
@@ -29,31 +33,48 @@ service cloud.firestore {
 
     // Buchungen
     match /buchungen/{buchungId} {
-      // Öffentlicher Zugriff zum Erstellen und Lesen
-      allow create: if true;
-      allow read: if true;  // Erlaubt Verfügbarkeitsprüfung
-      // Bearbeiten und Löschen nur für Admin
-      allow update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // Erstellen erlauben, wenn die notwendigen Daten vorhanden sind und der Status 'angefragt' ist.
+      // Erlaubt auch für nicht-authentifizierte Benutzer (request.auth == null).
+      allow create: if request.resource.data.status == 'angefragt' &&
+                       request.resource.data.date is timestamp &&
+                       request.resource.data.time is string &&
+                       request.resource.data.customer.name is string &&
+                       request.resource.data.customer.name.size() > 0 &&
+                       request.resource.data.customer.email is string &&
+                       request.resource.data.customer.email.matches('.+@.+\\..+'); // Einfache E-Mail-Prüfung
+                       // Optional: Weitere Felder prüfen (duration, treatment etc.)
+                       
+      // Jeder darf lesen (z.B. für Verfügbarkeitsprüfung durch Website/App)
+      allow read: if true;
+      
+      // Update/Delete nur durch Admin erlaubt
+      allow update, delete: if isAdmin(request.auth.uid);
     }
     
     // Kontaktanfragen
     match /kontaktanfragen/{anfragenId} {
-      // Öffentlicher Zugriff nur zum Erstellen
-      allow create: if true;
-      // Lesen und Bearbeiten nur für Admin
-      allow read, update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // Erstellen erlauben, wenn Name und E-Mail vorhanden sind.
+      allow create: if request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.email is string &&
+                       request.resource.data.email.matches('.+@.+\\..+');
+                       
+      // Lesen/Update/Delete nur durch Admin
+      allow read, update, delete: if isAdmin(request.auth.uid);
     }
     
     // Verfügbare Zeitslots
     match /verfuegbare_slots/{slotId} {
-      // Öffentlich lesbar und schreibbar für Buchungen
-      allow read, write: if true;
+      // Lesen darf jeder (für Website-Kalender)
+      allow read: if true;
+      // Schreiben (Erstellen, Ändern, Löschen) nur durch Admin
+      allow write: if isAdmin(request.auth.uid);
     }
     
     // Admin-Einstellungen
     match /admin_settings/{settingId} {
       // Nur Admin hat vollen Zugriff
-      allow read, write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow read, write: if isAdmin(request.auth.uid);
     }
   }
 } 

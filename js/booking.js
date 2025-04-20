@@ -481,16 +481,14 @@ export default class BookingSystem {
             timeSlotsContainer.innerHTML = '';
 
             if (calculatedSlots.length === 0) {
-                timeSlotsContainer.innerHTML = '<p>Keine verfügbaren Termine an diesem Tag.</p>';
+                timeSlotsContainer.innerHTML = '<p class="no-slots-message">Keine verfügbaren Termine an diesem Tag.</p>';
                 this.disableNextButton();
             } else {
-                const grid = document.createElement('div');
-                grid.className = 'time-slots-grid';
-                timeSlotsContainer.appendChild(grid);
+                timeSlotsContainer.classList.add('time-slots-grid');
                 
                 calculatedSlots.forEach(time => {
                     const slotElement = this.createTimeSlotElement(time);
-                    grid.appendChild(slotElement);
+                    timeSlotsContainer.appendChild(slotElement);
                 });
                 
                 this.disableNextButton();
