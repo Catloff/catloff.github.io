@@ -3,11 +3,15 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import BookingSystem from './booking.js';
 import { db } from './firebase.js';
+import { initializeAuthCheck } from './auth.js';
 
 // Website Initialisierung
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Website geladen');
     
+    // Auth-Check initialisieren, um Overlay zu steuern
+    initializeAuthCheck();
+
     // Mobile Navigation
     const mobileMenuButton = document.querySelector('.mobile-menu');
     const navLinks = document.querySelector('.nav-links');
@@ -102,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Test der Firebase-Verbindung
+    // Test der Firebase-Verbindung (kann entfernt oder belassen werden)
+    /*
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -111,4 +116,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Kein Benutzer eingeloggt');
         }
     });
+    */
 }); 

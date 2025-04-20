@@ -1,5 +1,24 @@
 # Projekt-Updates
 
+## {Datum} - CMS Entfernung & Bereinigung
+- Komplettes CMS-System entfernt, um Komplexität zu reduzieren und Fokus auf Kernfunktionen (Info, Buchung) zu legen.
+- `admin.html` gelöscht.
+- CMS-Benutzerhandbuch (`CMS-Benutzerhandbuch.md`) gelöscht.
+- GitHub Action Workflow für CMS-Sync (`.github/workflows/firebase-sync.yml`) gelöscht (Fehler beim Löschen, ggf. manuell prüfen).
+- Cloud Functions für CMS (`onCmsContentChange`, `onStructureChange`, `onStorageChange`, `triggerGitHubAction`) aus `functions/index.js` entfernt.
+- Firestore Rules (`firestore.rules`): Regeln für CMS-Collections (`cms_content`, `cms_versions`, `cms_sections`) entfernt.
+- Firebase Storage Rules (`storage.rules`): Regel für Admin-Pfad (`/admin/`) entfernt.
+- `content/`-Ordner gelöscht (Fehler beim Löschen, ggf. manuell prüfen).
+- `NEXTSTEPS.md` und `Entwickler-Dokumentation.md` geleert (Platzhalter eingefügt).
+- `README.md` aktualisiert (CMS-Referenzen entfernt, Hosting-Info korrigiert).
+- Unnötige JS-Datei `js/admin.js` gelöscht.
+- Login-Logik in `js/main.js` korrigiert, sodass `initializeAuthCheck` aus `js/auth.js` aufgerufen wird, um das Overlay nach Admin-Login korrekt auszublenden.
+
+## {Datum} - Bereinigung und Klärung Hosting
+- Überflüssige Dateien entfernt (`cripts`, `h origin main`). (`nvm-setup.exe` muss manuell gelöscht werden)
+- Redundante Firebase Hosting Konfiguration aus `firebase.json` entfernt, da die Seite über GitHub Pages gehostet wird.
+- Hosting-Verfahren geklärt: Nutzung von GitHub Pages für die Auslieferung der Website.
+
 ## 2024-12-24
 ### Website-Grundstruktur
 - Initialisierung des Projekts
