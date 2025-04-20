@@ -6,8 +6,8 @@
 }
 
 :root {
-    --primary-color: #5AC8FA;
-    --secondary-color: #8BC34A;
+    --primary-color: #FF8C00;
+    --secondary-color: #5AC8FA;
     --text-color: #444444;
     --background-color: #fff;
     --spacing-unit: 1rem;
@@ -115,7 +115,7 @@ main {
 
 #hero h1 {
     font-size: 3rem;
-    color: #FF8C00;
+    color: var(--primary-color);
     margin-bottom: calc(var(--spacing-unit) * 2);
     line-height: 1.2;
 }
