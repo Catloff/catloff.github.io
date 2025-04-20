@@ -533,7 +533,6 @@ export default class BookingSystem {
             <h4>Ihre Terminanfrage</h4>
             <p><strong>Datum:</strong> ${dateString}</p>
             <p><strong>Uhrzeit:</strong> ${this.selectedTime} Uhr</p>
-            <p><strong>Dauer:</strong> ca. ${this.bookingDuration} Minuten</p>
             <p>Bitte überprüfen Sie Ihre persönlichen Daten unten.</p>
         `;
     }
