@@ -352,3 +352,8 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 - "Termin buchen"-Button aus Hero-Sektion entfernt.
 - KiTE-Logo zur Navigationsleiste hinzugefügt.
 - Hintergrundbild der Hero-Sektion geändert und Styling in CSS-Datei ausgelagert.
+
+## {Datum} - Datenschutzerklärung hinzugefügt
+- Standard-Datenschutzerklärungstext in `datenschutz.html` eingefügt.
+- CSS-Klasse `legal-content` zum `main`-Element hinzugefügt für konsistentes Styling.
+- Platzhalter für persönliche Daten (Name, Adresse, E-Mail, Datum) müssen noch ausgefüllt werden.
