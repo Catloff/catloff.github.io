@@ -21,6 +21,7 @@ export default class BookingSystem {
         this.selectedDate = null;
         this.selectedTime = null;
         this.currentMonth = new Date();
+        console.log('Initial currentMonth:', this.currentMonth);
         
         this.init();
     }
@@ -28,13 +29,19 @@ export default class BookingSystem {
     init() {
         console.log('BookingSystem init() aufgerufen');
         
-        setTimeout(() => {
-            console.log('Starte verzögerte Initialisierung...');
-            this.initStepNavigation();
-            this.initCalendar();
-            this.initBookingForm();
-            console.log('Verzögerte Initialisierung abgeschlossen');
-        }, 500);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', this.initializeComponents.bind(this));
+        } else {
+            this.initializeComponents();
+        }
+    }
+
+    initializeComponents() {
+        console.log('DOM geladen, starte Initialisierung der Komponenten...');
+        this.initStepNavigation();
+        this.initCalendar();
+        this.initBookingForm();
+        console.log('Initialisierung der Komponenten abgeschlossen');
     }
 
     initStepNavigation() {
@@ -115,17 +122,25 @@ export default class BookingSystem {
     }
 
     initCalendar() {
+        console.log('initCalendar wird aufgerufen');
         const calendar = document.getElementById('bookingCalendar');
         const prevMonth = document.querySelector('.prev-month');
         const nextMonth = document.querySelector('.next-month');
 
+        if (!calendar || !prevMonth || !nextMonth) {
+            console.error('Kalender-Elemente nicht im DOM gefunden! Abbruch.');
+            return;
+        }
+
         prevMonth.addEventListener('click', () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
+            console.log('Gehe zu Vormonat:', this.currentMonth);
             this.updateCalendar();
         });
 
         nextMonth.addEventListener('click', () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() + 1);
+            console.log('Gehe zu Nächstmonat:', this.currentMonth);
             this.updateCalendar();
         });
 
@@ -133,13 +148,21 @@ export default class BookingSystem {
     }
 
     async updateCalendar() {
+        console.log('updateCalendar wird aufgerufen für Monat:', this.currentMonth);
         const calendar = document.getElementById('bookingCalendar');
         const currentMonthElement = document.getElementById('currentMonth');
         
-        currentMonthElement.textContent = this.currentMonth.toLocaleDateString('de-DE', {
+        if (!calendar || !currentMonthElement) {
+            console.error('Kalender-Container oder Monatsanzeige nicht gefunden.');
+            return;
+        }
+        
+        const monthYearString = this.currentMonth.toLocaleDateString('de-DE', {
             month: 'long',
             year: 'numeric'
         });
+        currentMonthElement.textContent = monthYearString;
+        console.log('Monatsanzeige gesetzt auf:', monthYearString);
 
         calendar.innerHTML = '';
 
@@ -151,69 +174,54 @@ export default class BookingSystem {
             calendar.appendChild(dayElement);
         });
 
-        const firstDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
-        const lastDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
+        const firstDayOfMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+        const lastDayOfMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         
-        let firstWeekday = firstDay.getDay() || 7;
-        for (let i = 1; i < firstWeekday; i++) {
+        let dayOfWeek = firstDayOfMonth.getDay();
+        let startOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        for (let i = 0; i < startOffset; i++) {
             const emptyDay = document.createElement('div');
-            emptyDay.className = 'calendar-day disabled';
+            emptyDay.className = 'calendar-day empty';
             calendar.appendChild(emptyDay);
         }
 
-        console.log('Lade Termine für Monat:', {
-            firstDay: firstDay.toISOString(),
-            lastDay: lastDay.toISOString()
-        });
-        const availableSlots = await this.getAvailableSlots(firstDay, lastDay);
-        console.log('Verfügbare Slots für Monat:', availableSlots);
-
-        for (let day = 1; day <= lastDay.getDate(); day++) {
-            const date = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
+        for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+            const currentDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
+            dayElement.dataset.date = currentDate.toISOString().split('T')[0];
 
             const dayContent = document.createElement('div');
             dayContent.className = 'day-content';
             dayContent.textContent = day;
             dayElement.appendChild(dayContent);
-
-            if (date < new Date().setHours(0,0,0,0)) {
+            
+            if (currentDate < today) {
                 dayElement.classList.add('disabled');
-                console.log(`${date.toDateString()} ist in der Vergangenheit`);
-            } 
-            else if (date.getDay() === 0 || date.getDay() === 6) {
-                dayElement.classList.add('disabled');
-                console.log(`${date.toDateString()} ist am Wochenende`);
-            }
-            else if (availableSlots[date.toDateString()]) {
-                console.log(`${date.toDateString()} hat verfügbare Slots:`, availableSlots[date.toDateString()]);
-                dayElement.classList.add('has-slots');
-                
-                const slotsCount = availableSlots[date.toDateString()].length;
-                const indicator = document.createElement('div');
-                indicator.className = 'slots-indicator';
-                indicator.textContent = `${slotsCount} ${slotsCount === 1 ? 'Termin' : 'Termine'}`;
-                dayElement.appendChild(indicator);
-                
-                dayElement.addEventListener('click', () => this.selectDate(date));
             } else {
-                dayElement.classList.add('disabled');
-                console.log(`${date.toDateString()} hat keine verfügbaren Slots`);
+                dayElement.addEventListener('click', () => {
+                    this.selectDate(currentDate, dayElement);
+                });
             }
-
             calendar.appendChild(dayElement);
         }
-
-        const timeSlotsContainer = document.getElementById('timeSlots');
-        if (timeSlotsContainer) {
-            timeSlotsContainer.innerHTML = '';
+        
+        const totalDaysRendered = startOffset + lastDayOfMonth.getDate();
+        const remainingCells = 42 - totalDaysRendered;
+        for (let i = 0; i < remainingCells; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendar.appendChild(emptyDay);
         }
-
-        const nextButton = document.querySelector('#bookingStep2 .next-step');
-        if (nextButton) {
-            nextButton.disabled = true;
-        }
+        
+        console.log('Kalender-Grid neu aufgebaut.');
+        
+        this.selectedDate = null;
+        this.selectedTime = null;
+        document.getElementById('timeSlots').innerHTML = '';
+        this.disableNextButton();
     }
 
     async getAvailableSlots(startDate, endDate) {
