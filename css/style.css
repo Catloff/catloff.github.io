@@ -115,7 +115,7 @@ main {
 
 #hero h1 {
     font-size: 3rem;
-    color: var(--primary-color);
+    color: #FF8C00;
     margin-bottom: calc(var(--spacing-unit) * 2);
     line-height: 1.2;
 }
@@ -743,7 +743,7 @@ footer {
 }
 
 .submit-button:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: var(--secondary-color);
 }
 
 /* Responsive Anpassungen für die Kontakt-Sektion */
@@ -1119,7 +1119,7 @@ footer {
 
 .next-step:hover,
 .submit-booking:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: var(--secondary-color);
 }
 
 .prev-step:hover {
