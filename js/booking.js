@@ -207,7 +207,22 @@ export default class BookingSystem {
             dayContent.textContent = day;
             dayElement.appendChild(dayContent);
             
+            let isDisabled = false;
             if (currentDate < today) {
+                isDisabled = true;
+            } else {
+                try {
+                    const slotsForDay = await this.getAvailableSlotsForDay(currentDate);
+                    if (slotsForDay.length === 0) {
+                        isDisabled = true; 
+                    }
+                } catch (error) {
+                    console.error(`Fehler beim Prüfen der Slots für ${currentDate.toLocaleDateString()}:`, error);
+                    isDisabled = true;
+                }
+            }
+
+            if (isDisabled) {
                 dayElement.classList.add('disabled');
             } else {
                 dayElement.addEventListener('click', () => {
@@ -436,25 +451,15 @@ export default class BookingSystem {
                 timeSlotsContainer.innerHTML = '<p>Keine verfügbaren Termine an diesem Tag.</p>';
                 this.disableNextButton();
             } else {
-                const morningSlots = [];
-                const afternoonSlots = [];
+                const grid = document.createElement('div');
+                grid.className = 'time-slots-grid';
+                timeSlotsContainer.appendChild(grid);
+                
                 calculatedSlots.forEach(time => {
-                    const hour = parseInt(time.split(':')[0]);
-                    if (hour < 12) {
-                        morningSlots.push(time);
-                    } else {
-                        afternoonSlots.push(time);
-                    }
+                    const slotElement = this.createTimeSlotElement(time);
+                    grid.appendChild(slotElement);
                 });
                 
-                if (morningSlots.length > 0) {
-                   const group = this.createTimeSlotGroup('Vormittag', morningSlots);
-                   timeSlotsContainer.appendChild(group);
-                }
-                if (afternoonSlots.length > 0) {
-                   const group = this.createTimeSlotGroup('Nachmittag', afternoonSlots);
-                   timeSlotsContainer.appendChild(group);
-                }
                 this.disableNextButton();
             }
 
@@ -463,25 +468,6 @@ export default class BookingSystem {
             timeSlotsContainer.innerHTML = '<p>Fehler beim Laden der Zeiten.</p>';
             this.disableNextButton();
         }
-    }
-
-    createTimeSlotGroup(title, slots) {
-        const container = document.createElement('div');
-        container.className = 'time-slots-group';
-        
-        const heading = document.createElement('h4');
-        heading.textContent = title;
-        container.appendChild(heading);
-
-        const grid = document.createElement('div');
-        grid.className = 'time-slots-grid';
-        container.appendChild(grid);
-
-        slots.forEach(time => {
-            const slotElement = this.createTimeSlotElement(time);
-            grid.appendChild(slotElement);
-        });
-        return container;
     }
 
     createTimeSlotElement(time) {
