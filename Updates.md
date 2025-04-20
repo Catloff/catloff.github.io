@@ -346,3 +346,9 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
     - Firebase Environment Configuration für E-Mail setzen.
     - Firebase Functions deployen.
     - Frontend-Logik für Slot-Berechnung und Buchung implementieren (`js/booking.js`).
+
+## UI Anpassungen
+- Wort "Heilung" durch "Ausgeglichenheit" in Hero-Sektion ersetzt.
+- "Termin buchen"-Button aus Hero-Sektion entfernt.
+- KiTE-Logo zur Navigationsleiste hinzugefügt.
+- Hintergrundbild der Hero-Sektion geändert und Styling in CSS-Datei ausgelagert.
