@@ -111,20 +111,16 @@ export default class BookingSystem {
             console.log('Container versteckt:', container.id);
         });
         
-        const nextStep = document.getElementById(`bookingStep${step}`);
-        console.log('Nächster Schritt Container:', nextStep?.id);
+        const nextStepElement = document.getElementById(`bookingStep${step}`);
+        console.log('Nächster Schritt Container:', nextStepElement?.id);
         
-        if (nextStep) {
-            console.log('Entferne hidden-Klasse von:', nextStep.id);
-            nextStep.classList.remove('hidden');
+        if (nextStepElement) {
+            console.log('Entferne hidden-Klasse von:', nextStepElement.id);
+            nextStepElement.classList.remove('hidden');
             this.currentStep = parseInt(step);
             console.log('Aktueller Schritt gesetzt auf:', this.currentStep);
 
-            if (step === '2') {
-                console.log('Aktualisiere Kalender');
-                this.updateCalendar();
-            }
-            if (step === '3') {
+            if (this.currentStep === 2) {
                 console.log('Aktualisiere Buchungszusammenfassung');
                 this.updateBookingSummary();
             }
