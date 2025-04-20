@@ -1,5 +1,18 @@
-import { collection, addDoc, query, where, getDocs, Timestamp, updateDoc, deleteDoc, startOfDay, endOfDay } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebase';
+
+// --- Eigene Hilfsfunktionen für Tagesanfang/-ende ---
+function customStartOfDay(date) {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+}
+
+function customEndOfDay(date) {
+    const newDate = new Date(date);
+    newDate.setHours(23, 59, 59, 999);
+    return newDate;
+}
 
 // --- Hilfsfunktionen für Zeitberechnung ---
 function timeStringToDate(timeString, referenceDate) {
@@ -309,8 +322,8 @@ export default class BookingSystem {
     async getAvailableSlotsForDay(date) {
         console.log('Rufe verfügbare Slots für Datum ab:', date.toISOString());
         const slots = [];
-        const start = startOfDay(date);
-        const end = endOfDay(date);
+        const start = customStartOfDay(date);
+        const end = customEndOfDay(date);
 
         try {
             const q = query(
@@ -332,8 +345,8 @@ export default class BookingSystem {
     async getBookingsForDay(date) {
         console.log('Rufe Buchungen für Datum ab:', date.toISOString());
         const bookings = [];
-        const start = startOfDay(date);
-        const end = endOfDay(date);
+        const start = customStartOfDay(date);
+        const end = customEndOfDay(date);
 
         try {
             const q = query(
