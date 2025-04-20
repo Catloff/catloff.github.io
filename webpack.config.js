@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const fs = require('fs');
 
 module.exports = {
-    entry: './js/firebase.js',
+    entry: './js/main.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
@@ -43,13 +43,6 @@ module.exports = {
                 { 
                     from: 'assets',
                     to: 'assets' 
-                },
-                {
-                    from: 'js',
-                    to: 'js',
-                    globOptions: {
-                        ignore: ['**/firebase.js'] // Ignoriere firebase.js da es bereits gebündelt wird
-                    }
                 },
                 {
                     from: 'CNAME',
