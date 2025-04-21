@@ -383,5 +383,10 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 ## {Datum} - Hover-Effekt für Profilbild
 - Hover-Effekt (`transform: scale(1.05)`) und Transition für das Profilbild (`.profile-image`) in `css/style.css` hinzugefügt.
 
-## {Datum} - Kalenderanzeige korrigiert
-- `js/booking.js` angepasst: Wenn nach Klick auf einen Tag festgestellt wird, dass keine Slots mehr buchbar sind (wegen Buchungen oder max. Limit), wird der Tag im Kalender nicht mehr als verfügbar (`.available`) markiert, sondern als deaktiviert (`.disabled`).
+## {Datum} - Korrekte Kalenderanzeige beim Laden
+- Logik in `js/booking.js` refaktoriert.
+- Neue Funktion `calculateAvailableSlotsForDay` prüft die tatsächliche Slot-Verfügbarkeit unter Berücksichtigung von Buchungen und Limits.
+- `updateCalendar` prüft nun jeden Tag beim Laden und färbt ihn nur grün (`.available`), wenn wirklich Slots frei sind, sonst grau (`.disabled`).
+- Klick-Listener werden nur für tatsächlich verfügbare Tage gesetzt.
+- `updateTimeSlots` wurde vereinfacht und zeigt nur noch die Slots für den (garantiert verfügbaren) geklickten Tag an.
+- Schrittweite zur Prüfung potenzieller Slots auf 30 Minuten geändert.

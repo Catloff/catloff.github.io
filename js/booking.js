@@ -26,6 +26,108 @@ function dateToTimeString(date) {
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 }
 
+// --- Neue Hilfsfunktion zur Berechnung der tatsächlichen Verfügbarkeit ---
+async function calculateAvailableSlotsForDay(date, bookingDuration) {
+    console.log(`Berechne tatsächliche Slots für: ${date.toLocaleDateString('de-DE')}`);
+    const availableSlotsData = await getAvailableSlotsForDayFirestore(date); // Umbenannte Firestore-Abfrage
+    const existingBookings = await getBookingsForDayFirestore(date); // Umbenannte Firestore-Abfrage
+    const calculatedSlots = [];
+
+    // Check für maximale Buchungen PRO TAG
+    if (existingBookings.length >= 2) {
+        console.log('Maximale Anzahl an Buchungen (2) für diesen Tag bereits erreicht.');
+        return []; // Keine Slots verfügbar
+    }
+
+    for (const slot of availableSlotsData) {
+        const slotStart = timeStringToDate(slot.startTime, date);
+        const slotEnd = timeStringToDate(slot.endTime, date);
+        let potentialStartTime = new Date(slotStart);
+
+        while (potentialStartTime < slotEnd) {
+            const potentialEndTime = new Date(potentialStartTime.getTime() + bookingDuration * 60000);
+
+            if (potentialEndTime <= slotEnd) {
+                const timeString = dateToTimeString(potentialStartTime);
+                
+                let isCollision = false;
+                for (const booking of existingBookings) {
+                    const bookingStart = booking.date.toDate();
+                    // Verwende die Dauer aus der Buchung, falls vorhanden, sonst die Standarddauer
+                    const currentBookingDuration = booking.duration || bookingDuration;
+                    const bookingEnd = new Date(bookingStart.getTime() + currentBookingDuration * 60000);
+
+                    // Kollisionsprüfung
+                    if (potentialStartTime < bookingEnd && potentialEndTime > bookingStart) {
+                        console.log(`Kollision: Slot ${timeString} überschneidet sich mit Buchung ${dateToTimeString(bookingStart)}`);
+                        isCollision = true;
+                        break;
+                    }
+                }
+
+                if (!isCollision) {
+                    if (!calculatedSlots.includes(timeString)) {
+                         calculatedSlots.push(timeString);
+                         console.log(`Gültiger Slot ${timeString} hinzugefügt.`);
+                    }
+                }
+            }
+            // WICHTIG: Schrittweite - Hier nehmen wir an, dass die Slots immer zur vollen Stunde oder halben Stunde beginnen?
+            // Wir verwenden eine feste Schrittweite von 30 Minuten, um alle Möglichkeiten zu prüfen.
+            potentialStartTime.setTime(potentialStartTime.getTime() + 30 * 60000); // 30 Minuten Schrittweite
+        }
+    }
+
+    calculatedSlots.sort();
+    console.log(`Berechnete verfügbare Slots: ${calculatedSlots.join(', ') || 'Keine'}`);
+    return calculatedSlots;
+}
+
+// --- Umbenannte Firestore Abfragefunktionen (waren vorher Methoden in der Klasse) ---
+async function getAvailableSlotsForDayFirestore(date) {
+    console.log('(Firestore) Rufe verfügbare Slot-Dokumente für Datum ab:', date.toISOString());
+    const slots = [];
+    const start = customStartOfDay(date);
+    const end = customEndOfDay(date);
+    try {
+        const q = query(
+            collection(db, 'verfuegbare_slots'), 
+            where('datum', '>=', start),
+            where('datum', '<=', end)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            slots.push({ id: doc.id, ...doc.data() });
+        });
+        console.log(`(Firestore) Gefundene verfügbare Slot-Dokumente: ${slots.length}`);
+    } catch (error) {
+        console.error('(Firestore) Fehler beim Abrufen der verfügbaren Slots:', error);
+    }
+    return slots;
+}
+
+async function getBookingsForDayFirestore(date) {
+    console.log('(Firestore) Rufe Buchungen für Datum ab:', date.toISOString());
+    const bookings = [];
+    const start = customStartOfDay(date);
+    const end = customEndOfDay(date);
+    try {
+        const q = query(
+            collection(db, 'buchungen'), 
+            where('date', '>=', start),
+            where('date', '<=', end)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            bookings.push({ id: doc.id, ...doc.data() });
+        });
+        console.log(`(Firestore) Gefundene Buchungen: ${bookings.length}`);
+    } catch (error) {
+        console.error('(Firestore) Fehler beim Abrufen der Buchungen:', error);
+    }
+    return bookings;
+}
+
 export default class BookingSystem {
     constructor() {
         console.log('BookingSystem Konstruktor aufgerufen');
@@ -166,14 +268,14 @@ export default class BookingSystem {
             return;
         }
         
-        const monthYearString = this.currentMonth.toLocaleDateString('de-DE', {
-            month: 'long',
-            year: 'numeric'
+        // Ladeindikator anzeigen?
+        calendar.innerHTML = '<p style="text-align:center; padding: 20px;">Lade Kalender...</p>'; 
+        currentMonthElement.textContent = this.currentMonth.toLocaleDateString('de-DE', {
+            month: 'long', year: 'numeric'
         });
-        currentMonthElement.textContent = monthYearString;
-        console.log('Monatsanzeige gesetzt auf:', monthYearString);
 
-        calendar.innerHTML = '';
+        // Leere den Kalender für den Neuaufbau
+        calendar.innerHTML = ''; 
 
         const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
         weekdays.forEach(day => {
@@ -196,43 +298,32 @@ export default class BookingSystem {
             calendar.appendChild(emptyDay);
         }
 
-        const availableDaysSet = await this.getMonthlyAvailability(this.currentMonth);
-        console.log('Verfügbarkeit für Monat geladen.');
-
+        // --- Schleife zum Rendern der Tage mit Verfügbarkeitsprüfung ---
         for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
             const currentDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
-            const currentDateStr = currentDate.toISOString().split('T')[0];
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
-            dayElement.dataset.date = currentDateStr;
+            dayElement.dataset.date = currentDate.toISOString().split('T')[0];
 
             const dayContent = document.createElement('div');
             dayContent.className = 'day-content';
             dayContent.textContent = day;
             dayElement.appendChild(dayContent);
             
-            let isDisabled = false;
-            let isAvailable = false;
-
             if (currentDate < today) {
-                isDisabled = true;
-            } else {
-                if (availableDaysSet.has(currentDateStr)) {
-                    isAvailable = true;
-                } else {
-                    isDisabled = true;
-                }
-            }
-
-            if (isDisabled) {
                 dayElement.classList.add('disabled');
             } else {
-                if (isAvailable) {
+                // Prüfe die TATSÄCHLICHE Verfügbarkeit für diesen Tag
+                const actualSlots = await calculateAvailableSlotsForDay(currentDate, this.bookingDuration);
+                if (actualSlots.length > 0) {
                     dayElement.classList.add('available');
+                    // Klick-Listener nur für verfügbare Tage hinzufügen
+                    dayElement.addEventListener('click', () => {
+                        this.selectDate(currentDate, dayElement);
+                    });
+                } else {
+                    dayElement.classList.add('disabled'); // Keine Slots -> Tag deaktivieren
                 }
-                dayElement.addEventListener('click', () => {
-                    this.selectDate(currentDate, dayElement);
-                });
             }
             calendar.appendChild(dayElement);
         }
@@ -245,168 +336,12 @@ export default class BookingSystem {
             calendar.appendChild(emptyDay);
         }
         
-        console.log('Kalender-Grid neu aufgebaut mit Verfügbarkeitsprüfung.');
+        console.log('Kalender-Grid neu aufgebaut mit TATSÄCHLICHER Verfügbarkeitsprüfung.');
         
         this.selectedDate = null;
         this.selectedTime = null;
-        document.getElementById('timeSlots').innerHTML = '';
+        document.getElementById('timeSlots').innerHTML = ''; // Zeitfenster leeren
         this.disableNextButton();
-    }
-
-    async getMonthlyAvailability(monthDate) {
-        console.log('Lade Monatsverfügbarkeit für:', monthDate.toLocaleDateString());
-        const availableDays = new Set();
-        
-        const firstDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-        const lastDayOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
-
-        try {
-            const q = query(
-                collection(db, 'verfuegbare_slots'),
-                where('datum', '>=', customStartOfDay(firstDayOfMonth)),
-                where('datum', '<=', customEndOfDay(lastDayOfMonth))
-            );
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                const slotData = doc.data();
-                if (slotData.datum) {
-                    const dateStr = slotData.datum.toDate().toISOString().split('T')[0];
-                    availableDays.add(dateStr);
-                }
-            });
-            console.log('Tage mit verfügbaren Slots im Monat:', availableDays);
-        } catch (error) {
-            console.error('Fehler beim Laden der Monatsverfügbarkeit:', error);
-        }
-        return availableDays;
-    }
-
-    async getAvailableSlots(startDate, endDate) {
-        try {
-            console.log('Lade verfügbare Slots für Zeitraum:', {
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString()
-            });
-
-            const start = new Date(startDate);
-            start.setHours(0, 0, 0, 0);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
-
-            console.log('Angepasster Zeitraum:', {
-                start: start.toISOString(),
-                end: end.toISOString()
-            });
-
-            const slotsRef = collection(db, 'verfuegbare_slots');
-            const q = query(
-                slotsRef,
-                where('datum', '>=', Timestamp.fromDate(start)),
-                where('datum', '<=', Timestamp.fromDate(end))
-            );
-
-            const querySnapshot = await getDocs(q);
-            console.log('Gefundene Slots in der Datenbank:', querySnapshot.size);
-            
-            const slots = {};
-
-            querySnapshot.forEach((doc) => {
-                const slotData = doc.data();
-                console.log('Slot-Daten:', slotData);
-                
-                const slotDate = slotData.datum.toDate();
-                const dateKey = slotDate.toDateString();
-                
-                if (!slots[dateKey]) {
-                    slots[dateKey] = [];
-                }
-
-                const startTime = this.parseTime(slotData.startTime);
-                const endTime = this.parseTime(slotData.endTime);
-                const interval = parseInt(slotData.intervall);
-                const treatmentDuration = this.bookingDuration;
-
-                console.log('Prüfe Zeitslot:', {
-                    startTime: startTime.toTimeString(),
-                    endTime: endTime.toTimeString(),
-                    interval,
-                    treatmentDuration
-                });
-
-                let currentTime = startTime;
-                while (currentTime < endTime) {
-                    const slotEndTime = new Date(currentTime.getTime() + treatmentDuration * 60000);
-                    
-                    if (slotEndTime <= endTime) {
-                        const timeString = `${currentTime.getHours().toString().padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}`;
-                        if (!slots[dateKey].includes(timeString)) {
-                            slots[dateKey].push(timeString);
-                        }
-                    }
-                    
-                    currentTime = new Date(currentTime.getTime() + interval * 60000);
-                }
-            });
-
-            console.log('Verarbeitete Slots:', slots);
-            return slots;
-        } catch (error) {
-            console.error('Fehler beim Laden der verfügbaren Termine:', error);
-            return {};
-        }
-    }
-
-    parseTime(timeString) {
-        const [hours, minutes] = timeString.split(':').map(Number);
-        const date = new Date();
-        date.setHours(hours, minutes, 0, 0);
-        return date;
-    }
-
-    async getAvailableSlotsForDay(date) {
-        console.log('Rufe verfügbare Slots für Datum ab:', date.toISOString());
-        const slots = [];
-        const start = customStartOfDay(date);
-        const end = customEndOfDay(date);
-
-        try {
-            const q = query(
-                collection(db, 'verfuegbare_slots'), 
-                where('datum', '>=', start),
-                where('datum', '<=', end)
-            );
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                slots.push({ id: doc.id, ...doc.data() });
-            });
-            console.log(`Gefundene verfügbare Slots für ${date.toLocaleDateString('de-DE')}:`, slots);
-        } catch (error) {
-            console.error('Fehler beim Abrufen der verfügbaren Slots:', error);
-        }
-        return slots;
-    }
-
-    async getBookingsForDay(date) {
-        console.log('Rufe Buchungen für Datum ab:', date.toISOString());
-        const bookings = [];
-        const start = customStartOfDay(date);
-        const end = customEndOfDay(date);
-
-        try {
-            const q = query(
-                collection(db, 'buchungen'), 
-                where('date', '>=', start),
-                where('date', '<=', end)
-            );
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                bookings.push({ id: doc.id, ...doc.data() });
-            });
-            console.log(`Gefundene Buchungen für ${date.toLocaleDateString('de-DE')}:`, bookings);
-        } catch (error) {
-            console.error('Fehler beim Abrufen der Buchungen:', error);
-        }
-        return bookings;
     }
 
     async selectDate(date, dayElement) {
@@ -419,102 +354,33 @@ export default class BookingSystem {
         if (dayElement) {
             dayElement.classList.add('selected');
         } else {
-            // Versuche, das Element zu finden, falls es nicht übergeben wurde (Fallback)
+            // Fallback (sollte nicht nötig sein, da Listener nur auf verfügbare Tage gesetzt wird)
             const dateStr = date.toISOString().split('T')[0];
             dayElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
-            if (dayElement) {
-                 dayElement.classList.add('selected');
-            } else {
-                console.warn('dayElement konnte nicht gefunden werden.');
-            }
+            if (dayElement) dayElement.classList.add('selected');
+            else console.warn('dayElement konnte nicht gefunden werden.');
         }
         
-        // Übergib dayElement an updateTimeSlots
-        await this.updateTimeSlots(date, dayElement);
+        // Rufe updateTimeSlots auf, um die Slots anzuzeigen (nicht mehr zum Deaktivieren)
+        await this.updateTimeSlots(date);
     }
 
-    async updateTimeSlots(date, dayElement = null) { 
+    async updateTimeSlots(date) { 
         console.log('Aktualisiere Zeit-Slots für:', date.toLocaleDateString('de-DE'));
         const timeSlotsContainer = document.getElementById('timeSlots');
         timeSlotsContainer.innerHTML = '<p>Lade verfügbare Zeiten...</p>';
 
-        // Fallback, falls dayElement nicht übergeben wurde
-        if (!dayElement) {
-             const dateStr = date.toISOString().split('T')[0];
-             dayElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
-        }
-
         try {
-            const availableSlotsData = await this.getAvailableSlotsForDay(date);
-            const existingBookings = await this.getBookingsForDay(date);
-            const calculatedSlots = [];
+            // Rufe die Berechnungsfunktion auf (Daten werden ggf. erneut geholt)
+            const calculatedSlots = await calculateAvailableSlotsForDay(date, this.bookingDuration);
 
-            // Check für maximale Buchungen PRO TAG (nicht pro Slot-Dokument)
-            if (existingBookings.length >= 2) {
-                console.log('Maximale Anzahl an Buchungen (2) für diesen Tag erreicht.');
-                timeSlotsContainer.innerHTML = '<p class="no-slots-message">Keine weiteren Termine für heute verfügbar.</p>';
-                this.disableNextButton();
-                // Tag im Kalender als nicht verfügbar markieren
-                if (dayElement) {
-                    dayElement.classList.remove('available');
-                    dayElement.classList.add('disabled'); // Oder eine andere Klasse für 'voll'
-                    dayElement.classList.remove('selected'); // Auswahl aufheben
-                }
-                return;
-            }
-
-            for (const slot of availableSlotsData) {
-                const slotStart = timeStringToDate(slot.startTime, date);
-                const slotEnd = timeStringToDate(slot.endTime, date);
-                let potentialStartTime = new Date(slotStart);
-
-                while (potentialStartTime < slotEnd) {
-                    const potentialEndTime = new Date(potentialStartTime.getTime() + this.bookingDuration * 60000);
-
-                    if (potentialEndTime <= slotEnd) {
-                        const timeString = dateToTimeString(potentialStartTime);
-                        
-                        let isCollision = false;
-                        for (const booking of existingBookings) {
-                            const bookingStart = booking.date.toDate();
-                            const bookingDuration = booking.duration || this.bookingDuration; 
-                            const bookingEnd = new Date(bookingStart.getTime() + bookingDuration * 60000);
-
-                            if (potentialStartTime < bookingEnd && potentialEndTime > bookingStart) {
-                                console.log(`Kollision gefunden: Slot ${timeString} überschneidet sich mit Buchung ${dateToTimeString(bookingStart)} - ${dateToTimeString(bookingEnd)}`);
-                                isCollision = true;
-                                break;
-                            }
-                        }
-
-                        if (!isCollision) {
-                            if (!calculatedSlots.includes(timeString)) {
-                                 calculatedSlots.push(timeString);
-                                 console.log(`Gültiger Slot hinzugefügt: ${timeString}`);
-                            }
-                        }
-                    }
-                    // WICHTIG: Schrittweite anpassen! Hier muss die kleinste mögliche Schrittweite (z.B. 30 Min?) oder das Intervall des Slots verwendet werden, nicht bookingDuration!
-                    // Annahme: Wir wollen alle möglichen Startzeiten im Slot prüfen, nicht nur alle 120min.
-                    // Ändern wir dies zu einer festen Schrittweite, z.B. 30 Minuten, um alle potenziellen Slots zu finden.
-                    // ODER: Wenn die Logik so gedacht war, dass nur alle 120min ein Slot startet, war es korrekt.
-                    // Für jetzt belasse ich es, aber dies könnte ein Punkt für Verwirrung sein.
-                    potentialStartTime.setTime(potentialStartTime.getTime() + this.bookingDuration * 60000);
-                }
-            }
-
-            calculatedSlots.sort();
-            timeSlotsContainer.innerHTML = '';
+            timeSlotsContainer.innerHTML = ''; // Leere Container für Neuaufbau
 
             if (calculatedSlots.length === 0) {
+                // Dieser Fall sollte theoretisch nicht eintreten, da der Tag nicht klickbar sein sollte
                 timeSlotsContainer.innerHTML = '<p class="no-slots-message">Keine verfügbaren Termine an diesem Tag.</p>';
                 this.disableNextButton();
-                 // Tag im Kalender als nicht verfügbar markieren
-                if (dayElement) {
-                    dayElement.classList.remove('available');
-                    dayElement.classList.add('disabled'); // Oder eine andere Klasse für 'voll'
-                    dayElement.classList.remove('selected'); // Auswahl aufheben
-                }
+                console.warn('updateTimeSlots aufgerufen für einen Tag ohne verfügbare Slots - sollte nicht passieren.');
             } else {
                 timeSlotsContainer.classList.add('time-slots-grid');
                 
@@ -523,24 +389,13 @@ export default class BookingSystem {
                     timeSlotsContainer.appendChild(slotElement);
                 });
                 
-                this.disableNextButton();
-                 // Stelle sicher, dass der Tag als verfügbar markiert ist (falls er vorher disabled war)
-                 if (dayElement) {
-                    dayElement.classList.add('available');
-                    dayElement.classList.remove('disabled');
-                 }
+                this.disableNextButton(); // Button erst nach Zeitauswahl aktivieren
             }
 
         } catch (error) {
             console.error('Fehler beim Aktualisieren der Zeit-Slots:', error);
             timeSlotsContainer.innerHTML = '<p>Fehler beim Laden der Zeiten.</p>';
             this.disableNextButton();
-             // Tag im Kalender als nicht verfügbar markieren (optional, bei Fehler)
-             if (dayElement) {
-                 dayElement.classList.remove('available');
-                 dayElement.classList.add('disabled');
-                 dayElement.classList.remove('selected');
-             }
         }
     }
 
