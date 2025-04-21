@@ -394,3 +394,6 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 *   **(TIMESTAMP)** - Slot-Berechnung (`js/booking.js` - `calculateAvailableSlotsForDay`) korrigiert, um nur volle 120-Minuten-Slots im korrekten Intervall anzuzeigen.
 *   **(TIMESTAMP)** - Validierungs-Popup (`alert`) in Schritt 1 der Buchung (`js/booking.js` - `validateStep`) durch eine Inline-Fehlermeldung ersetzt.
 *   **(2024-07-25 10:00)** - Webpack-Konfiguration (`webpack.config.js`) angepasst, um `impressum.html` und `datenschutz.html` in das `dist`-Verzeichnis zu kopieren. Behebt 404-Fehler für diese Seiten.
+*   **(2024-07-25 10:15)** - Footer in `impressum.html` und `datenschutz.html` mit korrekten Kontaktdaten aktualisiert.
+*   **(2024-07-25 10:15)** - `impressum.html` überarbeitet: Kontaktdaten eingefügt, Platzhalter für optionale Angaben (USt-ID, Aufsichtsbehörde etc.) hinzugefügt, Standardtexte für EU-Streitschlichtung und VSBG ergänzt.
+*   **(2024-07-25 10:15)** - `datenschutz.html` grundlegend überarbeitet: Verantwortlicher ergänzt, Rechtsgrundlagen aktualisiert (DSGVO), Abschnitte zu Hosting (GitHub/Firebase), Firebase-Nutzung (Firestore, Functions, Auth), Kontaktformular, Terminbuchung, Cookies (inkl. Empfehlung für Banner), detaillierten Betroffenenrechten und Beschwerderecht hinzugefügt. Hinweis: Keine Rechtsberatung, Prüfung durch Experten empfohlen.
