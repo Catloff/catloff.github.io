@@ -47,6 +47,14 @@ module.exports = {
                 {
                     from: 'CNAME',
                     to: ''
+                },
+                {
+                    from: 'impressum.html',
+                    to: ''
+                },
+                {
+                    from: 'datenschutz.html',
+                    to: ''
                 }
             ]
         })

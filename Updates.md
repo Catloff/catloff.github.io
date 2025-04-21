@@ -393,3 +393,4 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 *   **(TIMESTAMP)** - Statischen HTML-Code aus `index.html` entfernt, der Beispiel-Zeitslots anzeigte.
 *   **(TIMESTAMP)** - Slot-Berechnung (`js/booking.js` - `calculateAvailableSlotsForDay`) korrigiert, um nur volle 120-Minuten-Slots im korrekten Intervall anzuzeigen.
 *   **(TIMESTAMP)** - Validierungs-Popup (`alert`) in Schritt 1 der Buchung (`js/booking.js` - `validateStep`) durch eine Inline-Fehlermeldung ersetzt.
+*   **(2024-07-25 10:00)** - Webpack-Konfiguration (`webpack.config.js`) angepasst, um `impressum.html` und `datenschutz.html` in das `dist`-Verzeichnis zu kopieren. Behebt 404-Fehler für diese Seiten.
