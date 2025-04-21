@@ -10,7 +10,7 @@ function InitializeCookieConsent() {
     console.log('InitializeCookieConsent aufgerufen.');
     const banner = document.getElementById('cookieConsentBanner');
     const acceptButton = document.getElementById('cookieConsentAccept');
-    const closeButton = document.getElementById('cookieConsentClose');
+    const necessaryButton = document.getElementById('cookieConsentNecessary');
     const consentKey = 'cookieConsentDSM';
 
     if (!banner) {
@@ -28,9 +28,8 @@ function InitializeCookieConsent() {
     } else {
         if (userConsent === 'accepted') {
             console.log('Zustimmung im localStorage gefunden (accepted).');
-            // Ggf. zustimmungsbasierte Skripte laden
-        } else {
-            console.log('Zustimmung im localStorage gefunden (rejected/closed).');
+        } else if (userConsent === 'necessary') {
+            console.log('Zustimmung im localStorage gefunden (necessary).');
         }
         banner.style.display = 'none';
     }
@@ -41,15 +40,14 @@ function InitializeCookieConsent() {
             localStorage.setItem(consentKey, 'accepted');
             banner.style.display = 'none';
             console.log('Akzeptieren geklickt, Zustimmung gespeichert.');
-            // Ggf. zustimmungsbasierte Skripte laden
         });
     }
 
-    if (closeButton) {
-        closeButton.addEventListener('click', () => {
-            localStorage.setItem(consentKey, 'rejected');
+    if (necessaryButton) {
+        necessaryButton.addEventListener('click', () => {
+            localStorage.setItem(consentKey, 'necessary');
             banner.style.display = 'none';
-            console.log('Schließen geklickt, Ablehnung gespeichert.');
+            console.log('Nur erforderliche geklickt, Auswahl gespeichert.');
         });
     }
 }
