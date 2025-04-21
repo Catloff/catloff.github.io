@@ -5,10 +5,56 @@ import BookingSystem from './booking.js';
 import { db } from './firebase.js';
 import { initializeAuthCheck } from './auth.js';
 
+// --- Cookie Consent --- 
+function InitializeCookieConsent() {
+    const banner = document.getElementById('cookieConsentBanner');
+    const acceptButton = document.getElementById('cookieConsentAccept');
+    const closeButton = document.getElementById('cookieConsentClose');
+    const consentKey = 'cookieConsentDSM'; // Eindeutiger Key für localStorage
+
+    // Prüfen, ob bereits eine Entscheidung getroffen wurde
+    const userConsent = localStorage.getItem(consentKey);
+
+    if (!userConsent) {
+        // Banner anzeigen, wenn noch keine Entscheidung getroffen wurde
+        if (banner) banner.style.display = 'flex'; // 'flex', da wir Flexbox im CSS nutzen
+    } else {
+        // Ggf. Aktionen basierend auf gespeicherter Zustimmung/Ablehnung
+        if (userConsent === 'accepted') {
+            console.log('Cookie-Zustimmung wurde bereits erteilt.');
+            // Hier könnten Skripte initialisiert werden, die Zustimmung erfordern
+        } else {
+            console.log('Cookie-Zustimmung wurde verweigert oder Banner geschlossen.');
+        }
+    }
+
+    // Event Listener für Buttons
+    if (acceptButton) {
+        acceptButton.addEventListener('click', () => {
+            localStorage.setItem(consentKey, 'accepted');
+            if (banner) banner.style.display = 'none';
+            console.log('Cookie-Zustimmung erteilt.');
+             // Hier könnten Skripte initialisiert werden, die Zustimmung erfordern
+        });
+    }
+
+    if (closeButton) {
+        closeButton.addEventListener('click', () => {
+            localStorage.setItem(consentKey, 'rejected'); // Oder 'closed'
+            if (banner) banner.style.display = 'none';
+            console.log('Cookie-Banner geschlossen/abgelehnt.');
+        });
+    }
+}
+// --- Ende Cookie Consent ---
+
 // Website Initialisierung
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Website geladen');
     
+    // Cookie Consent initialisieren
+    InitializeCookieConsent();
+
     // Auth-Check initialisieren, um Overlay zu steuern
     initializeAuthCheck();
 

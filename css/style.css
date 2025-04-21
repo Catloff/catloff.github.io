@@ -1506,4 +1506,87 @@ footer {
     .profile-image {
         max-width: 250px; /* Etwas kleiner auf Mobilgeräten */
     }
+}
+
+/* Cookie Consent Banner */
+.cookie-consent-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0; /* Heller Grauton */
+    color: #333;
+    padding: 15px 20px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 1001; /* Über dem restlichen Inhalt, aber unter evtl. Modals */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.cookie-consent-banner p {
+    margin: 0;
+    flex-grow: 1;
+    padding-right: 20px; /* Abstand zu den Buttons */
+}
+
+.cookie-consent-banner a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.cookie-consent-banner a:hover {
+    color: var(--secondary-color);
+}
+
+.cookie-consent-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.cookie-consent-banner button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s ease;
+}
+
+.cookie-consent-banner button#cookieConsentAccept {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.cookie-consent-banner button#cookieConsentAccept:hover {
+    background-color: #e67e00; /* Etwas dunkleres Orange */
+}
+
+.cookie-consent-banner button#cookieConsentClose {
+    background-color: #ccc;
+    color: #333;
+}
+
+.cookie-consent-banner button#cookieConsentClose:hover {
+    background-color: #bbb;
+}
+
+/* Responsiveness für den Banner */
+@media (max-width: 768px) {
+    .cookie-consent-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cookie-consent-banner p {
+        padding-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .cookie-consent-buttons {
+        width: 100%;
+        justify-content: center;
+    }
 } 
