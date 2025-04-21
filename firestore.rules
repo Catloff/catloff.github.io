@@ -1,40 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users Collection
+    // === Admin Check ===
+    // Nutzt Custom Token Claim. Stelle sicher, dass dieser für Admins gesetzt wird!
+    function isAdmin() {
+      return request.auth != null && request.auth.token.isAdmin == true;
+    }
+
+    // === Users Collection ===
     match /users/{userId} {
-      // Jeder authentifizierte Benutzer kann seinen eigenen Eintrag lesen
-      allow read: if request.auth != null;
-      // Admin-Check (Beispiel: prüft ein Flag im User-Dokument)
-      function isAdmin(userId) {
-          return request.auth != null && get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == true;
-      }
+      // Jeder eingeloggte Benutzer kann seinen eigenen Eintrag lesen/schreiben.
+      // Admins können jeden Eintrag lesen (für zukünftige Admin-Funktionen).
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if request.auth != null && request.auth.uid == userId;
+       // Das Setzen des isAdmin Feldes sollte nur serverseitig/durch Admins erfolgen!
     }
 
-    // CMS Collections (entfernt)
-    /*
-    match /cms_content/{contentId} {
-      // Nur Admins können CMS-Inhalte lesen und schreiben
-      allow read: if true;  // Öffentlich lesbar
-      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-    }
-
-    match /cms_versions/{versionId} {
-      // Nur Admins können Versionen verwalten
-      allow read, write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-    }
-
-    match /cms_sections/{sectionId} {
-      // Abschnitts-Konfiguration
-      allow read: if true;
-      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-    }
-    */
-
-    // Buchungen
+    // === Buchungen ===
     match /buchungen/{buchungId} {
-      // Erstellen erlauben, wenn die notwendigen Daten vorhanden sind und der Status 'angefragt' ist.
-      // Erlaubt auch für nicht-authentifizierte Benutzer (request.auth == null).
+      // Erstellen: Jeder (auch anonym), mit Datenvalidierung.
+      // Angepasst von alten Regeln, KEIN request.auth Check hier.
       allow create: if request.resource.data.status == 'angefragt' &&
                        request.resource.data.date is timestamp &&
                        request.resource.data.time is string &&
@@ -42,39 +27,59 @@ service cloud.firestore {
                        request.resource.data.customer.name.size() > 0 &&
                        request.resource.data.customer.email is string &&
                        request.resource.data.customer.email.matches('.+@.+\\..+'); // Einfache E-Mail-Prüfung
-                       // Optional: Weitere Felder prüfen (duration, treatment etc.)
-                       
-      // Jeder darf lesen (z.B. für Verfügbarkeitsprüfung durch Website/App)
+                       // Optional: Füge hier Prüfungen für duration, treatment etc. hinzu, wenn die Website sie sendet!
+
+      // Lesen: Jeder darf lesen (für Verfügbarkeitsprüfung durch Website).
+      // Angepasst von alten Regeln.
       allow read: if true;
-      
-      // Update/Delete nur durch Admin erlaubt
-      allow update, delete: if isAdmin(request.auth.uid);
+
+      // Update: Nur Admins dürfen den Status ändern.
+      // Angepasst von neuen Regeln, nutzt die neue isAdmin() Funktion.
+      allow update: if isAdmin() &&
+                       request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+                       request.resource.data.status is string &&
+                       (request.resource.data.status == 'bestätigt' || request.resource.data.status == 'abgelehnt');
+
+      // Löschen: Nur Admins.
+      allow delete: if isAdmin();
     }
-    
-    // Kontaktanfragen
+
+    // === Kontaktanfragen ===
     match /kontaktanfragen/{anfragenId} {
-      // Erstellen erlauben, wenn Name und E-Mail vorhanden sind.
+      // Erstellen: Jeder (auch nicht angemeldet), mit Datenvalidierung.
       allow create: if request.resource.data.name is string &&
                        request.resource.data.name.size() > 0 &&
                        request.resource.data.email is string &&
                        request.resource.data.email.matches('.+@.+\\..+');
-                       
-      // Lesen/Update/Delete nur durch Admin
-      allow read, update, delete: if isAdmin(request.auth.uid);
+
+      // Lesen/Update/Delete: Nur durch Admin
+      // Nutzt die neue isAdmin() Funktion.
+      allow read, update, delete: if isAdmin();
     }
-    
-    // Verfügbare Zeitslots
+
+    // === Verfügbare Zeitslots ===
     match /verfuegbare_slots/{slotId} {
-      // Lesen darf jeder (für Website-Kalender)
+      // Lesen: Jeder (z.B. für Website-Kalender).
       allow read: if true;
-      // Schreiben (Erstellen, Ändern, Löschen) nur durch Admin
-      allow write: if isAdmin(request.auth.uid);
+
+      // Schreiben (Erstellen, Ändern, Löschen): Nur durch Admin, mit Datenvalidierung.
+      // Angepasst von neuen Regeln, nutzt die neue isAdmin() Funktion und Validierung.
+      allow write: if isAdmin() &&
+                      request.resource.data.datum is timestamp &&
+                      request.resource.data.startTime is string &&
+                      request.resource.data.startTime.matches('^[0-2][0-9]:[0-5][0-9]$') &&
+                      request.resource.data.endTime is string &&
+                      request.resource.data.endTime.matches('^[0-2][0-9]:[0-5][0-9]$') &&
+                      request.resource.data.isAvailable is bool &&
+                      // request.resource.data.intervall is number && // 'intervall' ggf. nicht nötig oder anders validieren
+                      request.resource.data.startTime < request.resource.data.endTime; // Grundlegende Validierung
     }
-    
-    // Admin-Einstellungen
+
+    // === Admin-Einstellungen ===
     match /admin_settings/{settingId} {
       // Nur Admin hat vollen Zugriff
-      allow read, write: if isAdmin(request.auth.uid);
+      // Nutzt die neue isAdmin() Funktion.
+      allow read, write: if isAdmin();
     }
   }
 } 

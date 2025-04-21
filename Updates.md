@@ -360,3 +360,10 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 
 ## {Datum} - Korrektur Footer-Links
 - Links zu Impressum und Datenschutz im Footer auf absolute Pfade (`/impressum.html`, `/datenschutz.html`) geändert, um 404-Fehler zu beheben.
+
+## {Datum} - E-Mail-Benachrichtigung für Kontaktformular
+- Neue Cloud Function `handleNewContactRequest` in `functions/index.js` hinzugefügt.
+- Löst bei neuen Einträgen in der `kontaktanfragen`-Collection aus.
+- Sendet eine E-Mail mit den Formulardaten an `info@dsm-kite.de`.
+- Verwendet den bestehenden Nodemailer-Transport.
+- Sendet *keine* Bestätigungs-E-Mail an den Absender.

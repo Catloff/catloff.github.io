@@ -139,6 +139,51 @@ exports.handleNewBooking = functions.firestore
         }
     });
 
+// --- Neue Funktion für Kontaktanfragen ---
+exports.handleNewContactRequest = functions.firestore
+    .document('kontaktanfragen/{anfragenId}')
+    .onCreate(async (snap, context) => {
+        const contactData = snap.data();
+        const requestId = context.params.anfragenId;
+        console.log(`Neue Kontaktanfrage (${requestId}):`, contactData);
+
+        // --- E-Mail-Versand an Admin ---
+        if (!transporter) {
+            console.error('Nodemailer Transporter nicht verfügbar. Kann keine E-Mail für Kontaktanfrage senden.');
+            return; // Beenden, wenn Transporter nicht initialisiert werden konnte
+        }
+        if (!emailUser) {
+             console.error('E-Mail-Benutzer (Absender) nicht konfiguriert für Kontaktanfrage.');
+             return;
+        }
+
+        // Daten extrahieren (mit Fallbacks)
+        const senderName = contactData.name || 'Unbekannt';
+        const senderEmail = contactData.email || 'Keine Angabe';
+        const senderPhone = contactData.phone || 'Keine Angabe';
+        const subject = contactData.subject || 'Kein Betreff';
+        const message = contactData.message || 'Keine Nachricht';
+        const adminEmail = 'info@dsm-kite.de'; // Feste Empfängeradresse
+
+        const mailToAdmin = {
+            from: `"KiTE® Website Kontaktformular" <${emailUser}>`, 
+            to: adminEmail, 
+            replyTo: senderEmail, // Setzt den Absender ins Antwort-An Feld
+            subject: `Neue Kontaktanfrage: ${subject} von ${senderName}`,
+            text: `Hallo Dani,\n\nDu hast eine neue Nachricht über das Kontaktformular erhalten:\n\nName: ${senderName}\nE-Mail: ${senderEmail}\nTelefon: ${senderPhone}\nBetreff: ${subject}\nNachricht:\n${message}\n\nAnfrage-ID: ${requestId}\n\nViele Grüße,\nDeine Website`, 
+            html: `<p>Hallo Dani,</p><p>Du hast eine neue Nachricht über das Kontaktformular erhalten:</p><ul><li><b>Name:</b> ${senderName}</li><li><b>E-Mail:</b> ${senderEmail}</li><li><b>Telefon:</b> ${senderPhone}</li><li><b>Betreff:</b> ${subject}</li></ul><p><b>Nachricht:</b></p><p style="white-space: pre-wrap;">${message}</p><p>Anfrage-ID: ${requestId}</p><p>Viele Grüße,<br/>Deine Website</p>`
+        };
+
+        // E-Mail versenden
+        try {
+            console.log(`Sende Kontaktformular-Benachrichtigung an ${adminEmail} für Anfrage ${requestId}...`);
+            const infoAdmin = await transporter.sendMail(mailToAdmin);
+            console.log('Kontaktformular-Benachrichtigung gesendet:', infoAdmin.messageId);
+        } catch (error) {
+            console.error(`Fehler beim Senden der Kontaktformular-E-Mail für Anfrage ${requestId}:`, error);
+        }
+    });
+
 // E-Mail-Funktionen werden später implementiert
 /*
 exports.sendBookingConfirmation = ...
