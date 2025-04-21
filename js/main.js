@@ -1,5 +1,5 @@
 // Main JavaScript file
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import BookingSystem from './booking.js';
 import { db } from './firebase.js';
@@ -7,42 +7,49 @@ import { initializeAuthCheck } from './auth.js';
 
 // --- Cookie Consent --- 
 function InitializeCookieConsent() {
+    console.log('InitializeCookieConsent aufgerufen.');
     const banner = document.getElementById('cookieConsentBanner');
     const acceptButton = document.getElementById('cookieConsentAccept');
     const closeButton = document.getElementById('cookieConsentClose');
-    const consentKey = 'cookieConsentDSM'; // Eindeutiger Key für localStorage
+    const consentKey = 'cookieConsentDSM';
 
-    // Prüfen, ob bereits eine Entscheidung getroffen wurde
+    if (!banner) {
+        console.log('Cookie-Banner Element nicht gefunden!');
+        return;
+    }
+    console.log('Cookie-Banner Element gefunden.');
+
     const userConsent = localStorage.getItem(consentKey);
+    console.log('localStorage Wert für', consentKey, ':', userConsent);
 
     if (!userConsent) {
-        // Banner anzeigen, wenn noch keine Entscheidung getroffen wurde
-        if (banner) banner.style.display = 'flex'; // 'flex', da wir Flexbox im CSS nutzen
+        console.log('Keine Zustimmung im localStorage gefunden, zeige Banner.');
+        banner.style.display = 'flex';
     } else {
-        // Ggf. Aktionen basierend auf gespeicherter Zustimmung/Ablehnung
         if (userConsent === 'accepted') {
-            console.log('Cookie-Zustimmung wurde bereits erteilt.');
-            // Hier könnten Skripte initialisiert werden, die Zustimmung erfordern
+            console.log('Zustimmung im localStorage gefunden (accepted).');
+            // Ggf. zustimmungsbasierte Skripte laden
         } else {
-            console.log('Cookie-Zustimmung wurde verweigert oder Banner geschlossen.');
+            console.log('Zustimmung im localStorage gefunden (rejected/closed).');
         }
+        banner.style.display = 'none';
     }
 
     // Event Listener für Buttons
     if (acceptButton) {
         acceptButton.addEventListener('click', () => {
             localStorage.setItem(consentKey, 'accepted');
-            if (banner) banner.style.display = 'none';
-            console.log('Cookie-Zustimmung erteilt.');
-             // Hier könnten Skripte initialisiert werden, die Zustimmung erfordern
+            banner.style.display = 'none';
+            console.log('Akzeptieren geklickt, Zustimmung gespeichert.');
+            // Ggf. zustimmungsbasierte Skripte laden
         });
     }
 
     if (closeButton) {
         closeButton.addEventListener('click', () => {
-            localStorage.setItem(consentKey, 'rejected'); // Oder 'closed'
-            if (banner) banner.style.display = 'none';
-            console.log('Cookie-Banner geschlossen/abgelehnt.');
+            localStorage.setItem(consentKey, 'rejected');
+            banner.style.display = 'none';
+            console.log('Schließen geklickt, Ablehnung gespeichert.');
         });
     }
 }
@@ -50,10 +57,7 @@ function InitializeCookieConsent() {
 
 // Website Initialisierung
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Website geladen');
-    
-    // Cookie Consent initialisieren
-    InitializeCookieConsent();
+    console.log('Website geladen (DOMContentLoaded Start)');
 
     // Auth-Check initialisieren, um Overlay zu steuern
     initializeAuthCheck();
@@ -151,6 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Admin Login Handler (im Overlay)
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    if (loginForm && loginError) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Verhindert das Neuladen der Seite
+            const email = loginForm.loginEmail.value;
+            const password = loginForm.loginPassword.value;
+            loginError.textContent = ''; // Fehlermeldung zurücksetzen
+            loginError.style.display = 'none';
+
+            try {
+                console.log('Versuche Admin-Login für:', email);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log('Admin-Login erfolgreich:', userCredential.user.email);
+                // Das Overlay wird automatisch durch onAuthStateChanged in auth.js ausgeblendet
+            } catch (error) {
+                console.error('Admin-Login fehlgeschlagen:', error.code, error.message);
+                loginError.textContent = 'Login fehlgeschlagen. Bitte E-Mail und Passwort prüfen.'; // Zeige generische Fehlermeldung
+                loginError.style.display = 'block';
+            }
+        });
+    }
     
     // Test der Firebase-Verbindung (kann entfernt oder belassen werden)
     /*
@@ -163,4 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     */
+
+    // Cookie Consent GANZ AM ENDE initialisieren, wenn der Rest des DOM sicher bereit ist
+    console.log('Initialisiere Cookie Consent (am Ende von DOMContentLoaded)');
+    InitializeCookieConsent();
+
+    console.log('Website Initialisierung (DOMContentLoaded Ende)');
 }); 
