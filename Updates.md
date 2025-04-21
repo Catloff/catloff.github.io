@@ -391,3 +391,5 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
     *   Zeichnet Kalender auf einmal mit korrekten Verfügbarkeitsklassen (grün/grau).
     *   `updateTimeSlots` nutzt nun vorberechnete Daten (keine extra DB-Abfragen bei Klick).
 *   **(TIMESTAMP)** - Statischen HTML-Code aus `index.html` entfernt, der Beispiel-Zeitslots anzeigte.
+*   **(TIMESTAMP)** - Slot-Berechnung (`js/booking.js` - `calculateAvailableSlotsForDay`) korrigiert, um nur volle 120-Minuten-Slots im korrekten Intervall anzuzeigen.
+*   **(TIMESTAMP)** - Validierungs-Popup (`alert`) in Schritt 1 der Buchung (`js/booking.js` - `validateStep`) durch eine Inline-Fehlermeldung ersetzt.

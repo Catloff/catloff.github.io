@@ -265,14 +265,18 @@ export default class BookingSystem {
 
     validateStep(step) {
         console.log('Validiere Schritt', step);
+        const errorMessageElement = document.getElementById('step1-error'); // ID des Fehler-Elements
+        if (errorMessageElement) errorMessageElement.textContent = ''; // Fehler zuerst löschen
+
         if (step === 1) {
-            // Detailliertes Logging der zu prüfenden Werte
             console.log('Prüfe selectedDate:', this.selectedDate);
             console.log('Prüfe selectedTime:', this.selectedTime);
             if (!this.selectedDate || !this.selectedTime) {
                 console.warn('Validierung fehlgeschlagen: Datum oder Zeit nicht ausgewählt.', { date: this.selectedDate, time: this.selectedTime });
-                alert('Bitte wählen Sie zuerst ein Datum und eine verfügbare Uhrzeit aus.');
-                return false; // Correctly returns false
+                if (errorMessageElement) {
+                    errorMessageElement.textContent = 'Bitte wählen Sie zuerst ein Datum UND eine verfügbare Uhrzeit aus.';
+                }
+                return false;
             }
         }
         // Weitere Validierungen für andere Schritte könnten hier folgen
@@ -298,6 +302,10 @@ export default class BookingSystem {
         } else {
             console.error('Container für Schritt nicht gefunden:', step);
         }
+
+        // Fehler löschen beim Schrittwechsel
+        const errorMessageElement = document.getElementById('step1-error');
+        if (errorMessageElement) errorMessageElement.textContent = '';
     }
 
     // initCalendar wird jetzt nur noch für die Navigation genutzt -> umbenannt
@@ -459,6 +467,10 @@ export default class BookingSystem {
         this.selectedTime = null; // Zeit zurücksetzen bei neuer Datumswahl
         this.disableNextButton(); // Weiter erstmal deaktivieren
 
+        // Fehler löschen bei neuer Datumswahl
+        const errorMessageElement = document.getElementById('step1-error');
+        if (errorMessageElement) errorMessageElement.textContent = '';
+
         const dayOfMonth = date.getDate();
         const availability = this.currentMonthData.get(dayOfMonth);
 
@@ -492,6 +504,11 @@ export default class BookingSystem {
         button.textContent = time;
         button.addEventListener('click', (e) => {
             e.preventDefault();
+
+             // Fehler löschen bei Zeit-Auswahl
+            const errorMessageElement = document.getElementById('step1-error');
+            if (errorMessageElement) errorMessageElement.textContent = '';
+
             // Visuelles Feedback für Auswahl
             document.querySelectorAll('.time-slot.selected').forEach(el => el.classList.remove('selected'));
             button.classList.add('selected');
