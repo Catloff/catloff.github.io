@@ -379,3 +379,6 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 - Sektion `#uber-mich` mit eigenem Hintergrund und Überschriften-Styling versehen.
 - Responsives Verhalten für die Sektion auf Mobilgeräten verbessert.
 - Generischen Platzhaltertext in `index.html` durch einen spezifischeren Text über Daniela Sieck-Mitzloff ersetzt.
+
+## {Datum} - Hover-Effekt für Profilbild
+- Hover-Effekt (`transform: scale(1.05)`) und Transition für das Profilbild (`.profile-image`) in `css/style.css` hinzugefügt.

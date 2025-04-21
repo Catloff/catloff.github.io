@@ -1480,6 +1480,11 @@ footer {
     border: 3px solid var(--primary-color); /* Optional: Rahmen in Primärfarbe */
     object-fit: cover; /* Stellt sicher, dass das Bild den Kreis gut ausfüllt */
     aspect-ratio: 1 / 1; /* Erzwingt quadratisches Verhältnis vor dem Runden */
+    transition: transform 0.3s ease; /* Sanfter Übergang für Hover */
+}
+
+.profile-image:hover {
+    transform: scale(1.05); /* Etwas stärkerer Effekt für das runde Bild */
 }
 
 /* Anpassen des Grids für Mobilgeräte in der Über-Mich Sektion */
