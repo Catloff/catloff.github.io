@@ -390,3 +390,11 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 - Klick-Listener werden nur für tatsächlich verfügbare Tage gesetzt.
 - `updateTimeSlots` wurde vereinfacht und zeigt nur noch die Slots für den (garantiert verfügbaren) geklickten Tag an.
 - Schrittweite zur Prüfung potenzieller Slots auf 30 Minuten geändert.
+
+## {Datum} - Kalender-Performance optimiert
+- `js/booking.js` stark refaktoriert, um Kalenderladezeiten zu verbessern.
+- `updateCalendar` holt jetzt alle Slots und Buchungen für den gesamten Monat mit nur 2 Datenbankabfragen (statt 2 pro Tag).
+- Die tatsächliche Verfügbarkeit wird clientseitig für den gesamten Monat berechnet, *bevor* der Kalender gerendert wird.
+- Tage werden initial korrekt als verfügbar (`.available`) oder deaktiviert (`.disabled`) angezeigt.
+- Paralleles Laden desselben Monats wird verhindert.
+- Rendering wird abgebrochen, wenn der Benutzer den Monat wechselt, während der alte noch lädt.
