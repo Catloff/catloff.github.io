@@ -385,4 +385,9 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 
 ### Updates
 
+*   **(TIMESTAMP)** - Kalenderlogik (`js/booking.js`) überarbeitet:
+    *   Lädt jetzt alle Verfügbarkeiten und Buchungen für den gesamten Monat auf einmal, bevor der Kalender gezeichnet wird.
+    *   Verwendet Ladeindikator und verhindert Race Conditions bei schnellem Monatswechsel.
+    *   Zeichnet Kalender auf einmal mit korrekten Verfügbarkeitsklassen (grün/grau).
+    *   `updateTimeSlots` nutzt nun vorberechnete Daten (keine extra DB-Abfragen bei Klick).
 *   **(TIMESTAMP)** - Statischen HTML-Code aus `index.html` entfernt, der Beispiel-Zeitslots anzeigte.
