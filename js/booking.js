@@ -29,8 +29,9 @@ function dateToTimeString(date) {
 // --- Hilfsfunktion zur Berechnung der tatsächlichen Verfügbarkeit FÜR EINEN TAG ---
 // Diese Funktion verwendet jetzt VORGELADENE Daten statt neuer DB-Abfragen
 function calculateAvailableSlotsForDay(date, bookingDuration, availableSlotsDataForDay, existingBookingsForDay) {
-    console.log(`Berechne tatsächliche Slots für: ${date.toLocaleDateString('de-DE')} aus vorgeladenen Daten`);
+    console.log(`Berechne tatsächliche Slots für: ${date.toLocaleDateString('de-DE')} mit Dauer ${bookingDuration}min aus vorgeladenen Daten`);
     const calculatedSlots = [];
+    const bookingDurationMillis = bookingDuration * 60000; // Dauer in Millisekunden
 
     // Check für maximale Buchungen PRO TAG
     if (existingBookingsForDay.length >= 2) {
@@ -41,45 +42,57 @@ function calculateAvailableSlotsForDay(date, bookingDuration, availableSlotsData
     for (const slot of availableSlotsDataForDay) {
         const slotStart = timeStringToDate(slot.startTime, date);
         const slotEnd = timeStringToDate(slot.endTime, date);
-        let potentialStartTime = new Date(slotStart);
+        let potentialStartTime = new Date(slotStart); // Beginne am Anfang des verfügbaren Zeitfensters
 
-        while (potentialStartTime < slotEnd) {
-            const potentialEndTime = new Date(potentialStartTime.getTime() + bookingDuration * 60000);
+        console.log(`Prüfe verfügbares Fenster: ${dateToTimeString(slotStart)} - ${dateToTimeString(slotEnd)}`);
 
-            if (potentialEndTime <= slotEnd) {
+        while (potentialStartTime.getTime() < slotEnd.getTime()) {
+            const potentialEndTime = new Date(potentialStartTime.getTime() + bookingDurationMillis);
+
+            console.log(`  Prüfe potenziellen Slot: ${dateToTimeString(potentialStartTime)} - ${dateToTimeString(potentialEndTime)}`);
+
+            // 1. Passt der Slot *vollständig* in das definierte verfügbare Zeitfenster?
+            if (potentialEndTime.getTime() <= slotEnd.getTime()) {
                 const timeString = dateToTimeString(potentialStartTime);
-                
                 let isCollision = false;
+
+                // 2. Gibt es eine Kollision mit einer *bestehenden* Buchung?
                 for (const booking of existingBookingsForDay) {
-                    const bookingStart = booking.date.toDate(); // Annahme: booking.date ist Firestore Timestamp
+                    const bookingStart = booking.jsDate; // Verwende das vorberechnete JS Date
                     // Verwende die Dauer aus der Buchung, falls vorhanden, sonst die Standarddauer
-                    const currentBookingDuration = booking.duration || bookingDuration;
-                    const bookingEnd = new Date(bookingStart.getTime() + currentBookingDuration * 60000);
+                    const currentBookingDurationMillis = (booking.duration || bookingDuration) * 60000;
+                    const bookingEnd = new Date(bookingStart.getTime() + currentBookingDurationMillis);
 
-                    // Kollisionsprüfung
-                    if (potentialStartTime < bookingEnd && potentialEndTime > bookingStart) {
-                        console.log(`Kollision: Slot ${timeString} überschneidet sich mit Buchung ${dateToTimeString(bookingStart)}`);
+                    // Kollisionsprüfung (überlappend)
+                    if (potentialStartTime.getTime() < bookingEnd.getTime() && potentialEndTime.getTime() > bookingStart.getTime()) {
+                        console.log(`    Kollision: Slot ${timeString} überschneidet sich mit Buchung ${dateToTimeString(bookingStart)} - ${dateToTimeString(bookingEnd)}`);
                         isCollision = true;
-                        break;
+                        break; // Eine Kollision reicht
                     }
                 }
 
+                // 3. Wenn keine Kollision, Slot hinzufügen (verhindere Duplikate)
                 if (!isCollision) {
-                    // Sicherstellen, dass wir keine Duplikate hinzufügen
                     if (!calculatedSlots.some(s => s.time === timeString)) {
-                         calculatedSlots.push({ time: timeString, date: new Date(potentialStartTime) }); // Speichern Datum für Sortierung
-                         console.log(`Gültiger Slot ${timeString} hinzugefügt.`);
+                        calculatedSlots.push({ time: timeString, date: new Date(potentialStartTime) }); // Speichern Datum für Sortierung
+                        console.log(`    Gültiger Slot ${timeString} hinzugefügt.`);
+                    } else {
+                         console.log(`    Slot ${timeString} bereits in Liste.`);
                     }
                 }
+            } else {
+                 console.log(`    Slot ${dateToTimeString(potentialStartTime)} - ${dateToTimeString(potentialEndTime)} passt nicht in Fenster ${dateToTimeString(slotStart)} - ${dateToTimeString(slotEnd)}`);
             }
-            // WICHTIG: Schrittweite - 30 Minuten Schrittweite
-            potentialStartTime.setTime(potentialStartTime.getTime() + 30 * 60000); 
+
+            // WICHTIG: Gehe zum Start des NÄCHSTEN möglichen Slots (basierend auf der Dauer)
+            // Dies stellt sicher, dass wir nur Slots prüfen, die z.B. um 12:00, 14:00, 16:00 beginnen
+            potentialStartTime.setTime(potentialStartTime.getTime() + bookingDurationMillis);
         }
     }
 
     // Sortieren nach Zeit
     calculatedSlots.sort((a, b) => a.date - b.date);
-    const finalSlots = calculatedSlots.map(s => s.time); // Nur die Zeitstrings zurückgeben
+    const finalSlots = calculatedSlots.map(s => s.time);
 
     console.log(`Berechnete verfügbare Slots für ${date.toLocaleDateString('de-DE')}: ${finalSlots.join(', ') || 'Keine'}`);
     return finalSlots;
@@ -209,10 +222,15 @@ export default class BookingSystem {
         nextButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
-                 if (this.validateStep(this.currentStep)) { // Validierung vor dem Wechsel
+                console.log(`Weiter Button geklickt für Schritt ${this.currentStep}. Validiere...`); // Log vor Validierung
+                const isValid = this.validateStep(this.currentStep);
+                console.log(`Validierungsergebnis für Schritt ${this.currentStep}: ${isValid}`); // Log nach Validierung
+                 if (isValid) { // Validierung vor dem Wechsel
                     const nextStep = button.getAttribute('data-next');
-                    console.log('Weiter-Button geklickt, nächster Schritt:', nextStep);
+                    console.log('Validierung erfolgreich. Rufe showStep auf für Schritt:', nextStep);
                     this.showStep(nextStep);
+                } else {
+                    console.warn('Validierung fehlgeschlagen. showStep wird NICHT aufgerufen.');
                 }
             });
         });
@@ -248,11 +266,13 @@ export default class BookingSystem {
     validateStep(step) {
         console.log('Validiere Schritt', step);
         if (step === 1) {
+            // Detailliertes Logging der zu prüfenden Werte
+            console.log('Prüfe selectedDate:', this.selectedDate);
+            console.log('Prüfe selectedTime:', this.selectedTime);
             if (!this.selectedDate || !this.selectedTime) {
-                console.warn('Validierung fehlgeschlagen: Datum oder Zeit nicht ausgewählt.');
-                // Hier könnte man eine User-Nachricht anzeigen
+                console.warn('Validierung fehlgeschlagen: Datum oder Zeit nicht ausgewählt.', { date: this.selectedDate, time: this.selectedTime });
                 alert('Bitte wählen Sie zuerst ein Datum und eine verfügbare Uhrzeit aus.');
-                return false;
+                return false; // Correctly returns false
             }
         }
         // Weitere Validierungen für andere Schritte könnten hier folgen
