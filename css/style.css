@@ -1453,4 +1453,52 @@ footer {
     background-position: center;
     margin-right: 8px;
     vertical-align: middle;
+}
+
+/* Über Mich Sektion - Anpassungen */
+#uber-mich {
+    padding: calc(var(--spacing-unit) * 4) var(--spacing-unit);
+    background-color: #f9f9f9; /* Leicht anderer Hintergrund zur Abwechslung? Oder white wie uber-uns */
+}
+
+#uber-mich h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    font-size: 2.5rem;
+}
+
+/* Profilbild Styling */
+.profile-image {
+    width: 100%;
+    max-width: 350px; /* Maximale Breite, um nicht zu riesig zu werden */
+    height: auto;
+    border-radius: 50%; /* Rundes Bild */
+    display: block; /* Zentrieren ermöglichen */
+    margin: 0 auto calc(var(--spacing-unit) * 2); /* Oben/Unten Abstand, Links/Rechts zentriert */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border: 3px solid var(--primary-color); /* Optional: Rahmen in Primärfarbe */
+    object-fit: cover; /* Stellt sicher, dass das Bild den Kreis gut ausfüllt */
+    aspect-ratio: 1 / 1; /* Erzwingt quadratisches Verhältnis vor dem Runden */
+}
+
+/* Anpassen des Grids für Mobilgeräte in der Über-Mich Sektion */
+@media (max-width: 768px) {
+    #uber-mich .content-wrapper {
+        grid-template-columns: 1fr; /* Untereinander auf Mobilgeräten */
+    }
+    #uber-mich .image-content {
+        order: 1; /* Bild zuerst */
+        margin-bottom: var(--spacing-unit);
+    }
+    #uber-mich .text-content {
+        order: 2; /* Text danach */
+        text-align: center; /* Optional: Text zentrieren */
+    }
+    #uber-mich h2 {
+        font-size: 2rem;
+    }
+    .profile-image {
+        max-width: 250px; /* Etwas kleiner auf Mobilgeräten */
+    }
 } 

@@ -373,3 +373,9 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 - Neues Profilbild (`IMG_20250421_131615.jpg`) eingebunden.
 - Platzhaltertext für die Beschreibung hinzugefügt.
 - CSS-Klassen `about-me-section` und `profile-image` hinzugefügt für mögliches späteres Styling.
+
+## {Datum} - Styling & Text für "Über mich"-Sektion
+- CSS-Regeln in `css/style.css` hinzugefügt, um das Profilbild (`.profile-image`) rund, zentriert und in passender Größe darzustellen.
+- Sektion `#uber-mich` mit eigenem Hintergrund und Überschriften-Styling versehen.
+- Responsives Verhalten für die Sektion auf Mobilgeräten verbessert.
+- Generischen Platzhaltertext in `index.html` durch einen spezifischeren Text über Daniela Sieck-Mitzloff ersetzt.
