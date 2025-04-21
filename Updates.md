@@ -382,7 +382,3 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 
 ## {Datum} - Hover-Effekt für Profilbild
 - Hover-Effekt (`transform: scale(1.05)`) und Transition für das Profilbild (`.profile-image`) in `css/style.css` hinzugefügt.
-
-## {Datum} - Korrektur Kalender-Performance-Optimierung
-- `js/booking.js` korrigiert: `updateTimeSlots` greift nun auf die bereits im Speicher vorhandenen Monatsdaten (Slots/Buchungen) zu, anstatt erneut Datenbankabfragen für den geklickten Tag durchzuführen.
-- Unnötige Helper-Funktionen (`getSlotsForDay`, `getBookingsForDay`) entfernt.
