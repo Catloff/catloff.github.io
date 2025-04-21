@@ -382,3 +382,7 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 
 ## {Datum} - Hover-Effekt für Profilbild
 - Hover-Effekt (`transform: scale(1.05)`) und Transition für das Profilbild (`.profile-image`) in `css/style.css` hinzugefügt.
+
+### Updates
+
+*   **(TIMESTAMP)** - Statischen HTML-Code aus `index.html` entfernt, der Beispiel-Zeitslots anzeigte.
