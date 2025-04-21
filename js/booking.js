@@ -80,8 +80,8 @@ export default class BookingSystem {
         this.selectedTime = null;
         this.currentMonth = new Date();
         // Cache für Monatsdaten
-        this.monthlySlotsData = null;
-        this.monthlyBookingsData = null;
+        this.monthlySlotsByDate = {}; // Initialisiere als leeres Objekt
+        this.monthlyBookingsByDate = {}; // Initialisiere als leeres Objekt
         this.currentMonthBeingFetched = null; // Verhindert parallele Fetches für denselben Monat
         console.log('Initial currentMonth:', this.currentMonth);
         
@@ -248,12 +248,12 @@ export default class BookingSystem {
                  return; // Nicht den Kalender für den alten Monat rendern
              }
 
-            // Schritt 2: Daten aufbereiten für schnellen Zugriff
-            const slotsByDate = this.groupDataByDate(slotsData, 'datum');
-            const bookingsByDate = this.groupDataByDate(bookingsData, 'date');
+            // Schritt 2: Daten aufbereiten und **zwischenspeichern**
+            this.monthlySlotsByDate = this.groupDataByDate(slotsData, 'datum');
+            this.monthlyBookingsByDate = this.groupDataByDate(bookingsData, 'date');
 
-            // Schritt 3: Verfügbarkeit für jeden Tag berechnen
-            const availabilityMap = this.calculateMonthlyAvailability(monthToLoad, slotsByDate, bookingsByDate);
+            // Schritt 3: Verfügbarkeit für jeden Tag berechnen (nutzt jetzt die gespeicherten Daten)
+            const availabilityMap = this.calculateMonthlyAvailability(monthToLoad, this.monthlySlotsByDate, this.monthlyBookingsByDate);
 
             // Schritt 4: Kalender rendern
             this.renderCalendarGrid(monthToLoad, availabilityMap);
@@ -423,29 +423,26 @@ export default class BookingSystem {
         
         if (dayElement) {
             dayElement.classList.add('selected');
-        } else {
-            // Fallback (theoretisch nicht mehr nötig)
-            const dateStr = date.toISOString().split('T')[0];
-            dayElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
-            if (dayElement) dayElement.classList.add('selected');
-        }
+        } 
         
         // Rufe updateTimeSlots auf, um die Slots für den ausgewählten Tag anzuzeigen
-        await this.updateTimeSlots(date);
+        // Es wird keine DB-Abfrage mehr gemacht, nutzt die zwischengespeicherten Daten
+        this.updateTimeSlots(date); // Nicht mehr async nötig, da keine DB-Abfrage
     }
 
-    // Zeigt nur noch die Timeslots an, die Berechnung erfolgt jetzt zentral
-    async updateTimeSlots(date) { 
+    // Zeigt nur noch die Timeslots an, nutzt die gecachten Monatsdaten
+    updateTimeSlots(date) { // Kein async mehr!
         console.log('Aktualisiere (zeige) Zeit-Slots für:', date.toLocaleDateString('de-DE'));
         const timeSlotsContainer = document.getElementById('timeSlots');
-        timeSlotsContainer.innerHTML = '<p>Lade verfügbare Zeiten...</p>';
+        // timeSlotsContainer.innerHTML = '<p>Lade verfügbare Zeiten...</p>'; // Nicht mehr nötig, da synchron
 
         try {
-            // Daten für den Tag holen (könnte man aus Cache nehmen, wenn implementiert)
-             const availableSlotsForDay = await this.getSlotsForDay(date); // Neue Funktion nur für diesen Tag
-             const bookingsForDay = await this.getBookingsForDay(date); // Neue Funktion nur für diesen Tag
+            // Daten aus dem Cache holen
+            const dateStr = date.toISOString().split('T')[0];
+            const availableSlotsForDay = this.monthlySlotsByDate[dateStr] || [];
+            const bookingsForDay = this.monthlyBookingsByDate[dateStr] || [];
 
-            // Berechne die Slots spezifisch für diesen Tag erneut
+            // Berechne die Slots spezifisch für diesen Tag mit den Cache-Daten
             const calculatedSlots = calculateSlotsForDay(date, availableSlotsForDay, bookingsForDay, this.bookingDuration);
 
             timeSlotsContainer.innerHTML = ''; // Leere Container
@@ -464,49 +461,11 @@ export default class BookingSystem {
             }
 
         } catch (error) {
-            console.error('Fehler beim Aktualisieren der Zeit-Slots:', error);
-            timeSlotsContainer.innerHTML = '<p>Fehler beim Laden der Zeiten.</p>';
+            // Fehler sollte hier unwahrscheinlich sein, da keine DB-Abfrage mehr stattfindet
+            console.error('Fehler beim Anzeigen der Zeit-Slots (aus Cache):', error);
+            timeSlotsContainer.innerHTML = '<p>Fehler beim Anzeigen der Zeiten.</p>';
             this.disableNextButton();
         }
-    }
-    
-    // Funktion, um nur Slots für EINEN spezifischen Tag zu holen (für updateTimeSlots)
-    async getSlotsForDay(date) {
-        console.log(`(Firestore) Lade Slots für Tag: ${date.toLocaleDateString()}`);
-        const slots = [];
-        try {
-            const q = query(
-                collection(db, 'verfuegbare_slots'),
-                where('datum', '==', customStartOfDay(date)) // Exakte Übereinstimmung für den Tag
-            );
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(doc => slots.push({ id: doc.id, ...doc.data() }));
-            console.log(`(Firestore) ${slots.length} Slot-Dokumente für Tag gefunden.`);
-        } catch (error) {
-            console.error('(Firestore) Fehler beim Laden der Slots für Tag:', error);
-        }
-        return slots;
-    }
-
-    // Funktion, um nur Buchungen für EINEN spezifischen Tag zu holen (für updateTimeSlots)
-    async getBookingsForDay(date) {
-        console.log(`(Firestore) Lade Buchungen für Tag: ${date.toLocaleDateString()}`);
-        const bookings = [];
-        const start = customStartOfDay(date);
-        const end = customEndOfDay(date);
-        try {
-            const q = query(
-                collection(db, 'buchungen'),
-                where('date', '>=', start),
-                where('date', '<=', end)
-            );
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(doc => bookings.push({ id: doc.id, ...doc.data() }));
-            console.log(`(Firestore) ${bookings.length} Buchungen für Tag gefunden.`);
-        } catch (error) {
-            console.error('(Firestore) Fehler beim Laden der Buchungen für Tag:', error);
-        }
-        return bookings;
     }
 
     createTimeSlotElement(time) {

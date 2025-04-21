@@ -383,18 +383,6 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 ## {Datum} - Hover-Effekt für Profilbild
 - Hover-Effekt (`transform: scale(1.05)`) und Transition für das Profilbild (`.profile-image`) in `css/style.css` hinzugefügt.
 
-## {Datum} - Korrekte Kalenderanzeige beim Laden
-- Logik in `js/booking.js` refaktoriert.
-- Neue Funktion `calculateAvailableSlotsForDay` prüft die tatsächliche Slot-Verfügbarkeit unter Berücksichtigung von Buchungen und Limits.
-- `updateCalendar` prüft nun jeden Tag beim Laden und färbt ihn nur grün (`.available`), wenn wirklich Slots frei sind, sonst grau (`.disabled`).
-- Klick-Listener werden nur für tatsächlich verfügbare Tage gesetzt.
-- `updateTimeSlots` wurde vereinfacht und zeigt nur noch die Slots für den (garantiert verfügbaren) geklickten Tag an.
-- Schrittweite zur Prüfung potenzieller Slots auf 30 Minuten geändert.
-
-## {Datum} - Kalender-Performance optimiert
-- `js/booking.js` stark refaktoriert, um Kalenderladezeiten zu verbessern.
-- `updateCalendar` holt jetzt alle Slots und Buchungen für den gesamten Monat mit nur 2 Datenbankabfragen (statt 2 pro Tag).
-- Die tatsächliche Verfügbarkeit wird clientseitig für den gesamten Monat berechnet, *bevor* der Kalender gerendert wird.
-- Tage werden initial korrekt als verfügbar (`.available`) oder deaktiviert (`.disabled`) angezeigt.
-- Paralleles Laden desselben Monats wird verhindert.
-- Rendering wird abgebrochen, wenn der Benutzer den Monat wechselt, während der alte noch lädt.
+## {Datum} - Korrektur Kalender-Performance-Optimierung
+- `js/booking.js` korrigiert: `updateTimeSlots` greift nun auf die bereits im Speicher vorhandenen Monatsdaten (Slots/Buchungen) zu, anstatt erneut Datenbankabfragen für den geklickten Tag durchzuführen.
+- Unnötige Helper-Funktionen (`getSlotsForDay`, `getBookingsForDay`) entfernt.
