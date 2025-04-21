@@ -419,26 +419,47 @@ export default class BookingSystem {
         if (dayElement) {
             dayElement.classList.add('selected');
         } else {
-            console.warn('dayElement wurde nicht an selectDate übergeben.')
+            // Versuche, das Element zu finden, falls es nicht übergeben wurde (Fallback)
+            const dateStr = date.toISOString().split('T')[0];
+            dayElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
+            if (dayElement) {
+                 dayElement.classList.add('selected');
+            } else {
+                console.warn('dayElement konnte nicht gefunden werden.');
+            }
         }
         
-        await this.updateTimeSlots(date);
+        // Übergib dayElement an updateTimeSlots
+        await this.updateTimeSlots(date, dayElement);
     }
 
-    async updateTimeSlots(date) {
+    async updateTimeSlots(date, dayElement = null) { 
         console.log('Aktualisiere Zeit-Slots für:', date.toLocaleDateString('de-DE'));
         const timeSlotsContainer = document.getElementById('timeSlots');
         timeSlotsContainer.innerHTML = '<p>Lade verfügbare Zeiten...</p>';
+
+        // Fallback, falls dayElement nicht übergeben wurde
+        if (!dayElement) {
+             const dateStr = date.toISOString().split('T')[0];
+             dayElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
+        }
 
         try {
             const availableSlotsData = await this.getAvailableSlotsForDay(date);
             const existingBookings = await this.getBookingsForDay(date);
             const calculatedSlots = [];
 
+            // Check für maximale Buchungen PRO TAG (nicht pro Slot-Dokument)
             if (existingBookings.length >= 2) {
                 console.log('Maximale Anzahl an Buchungen (2) für diesen Tag erreicht.');
-                timeSlotsContainer.innerHTML = '<p>Keine weiteren Termine für heute verfügbar.</p>';
+                timeSlotsContainer.innerHTML = '<p class="no-slots-message">Keine weiteren Termine für heute verfügbar.</p>';
                 this.disableNextButton();
+                // Tag im Kalender als nicht verfügbar markieren
+                if (dayElement) {
+                    dayElement.classList.remove('available');
+                    dayElement.classList.add('disabled'); // Oder eine andere Klasse für 'voll'
+                    dayElement.classList.remove('selected'); // Auswahl aufheben
+                }
                 return;
             }
 
@@ -473,6 +494,11 @@ export default class BookingSystem {
                             }
                         }
                     }
+                    // WICHTIG: Schrittweite anpassen! Hier muss die kleinste mögliche Schrittweite (z.B. 30 Min?) oder das Intervall des Slots verwendet werden, nicht bookingDuration!
+                    // Annahme: Wir wollen alle möglichen Startzeiten im Slot prüfen, nicht nur alle 120min.
+                    // Ändern wir dies zu einer festen Schrittweite, z.B. 30 Minuten, um alle potenziellen Slots zu finden.
+                    // ODER: Wenn die Logik so gedacht war, dass nur alle 120min ein Slot startet, war es korrekt.
+                    // Für jetzt belasse ich es, aber dies könnte ein Punkt für Verwirrung sein.
                     potentialStartTime.setTime(potentialStartTime.getTime() + this.bookingDuration * 60000);
                 }
             }
@@ -483,6 +509,12 @@ export default class BookingSystem {
             if (calculatedSlots.length === 0) {
                 timeSlotsContainer.innerHTML = '<p class="no-slots-message">Keine verfügbaren Termine an diesem Tag.</p>';
                 this.disableNextButton();
+                 // Tag im Kalender als nicht verfügbar markieren
+                if (dayElement) {
+                    dayElement.classList.remove('available');
+                    dayElement.classList.add('disabled'); // Oder eine andere Klasse für 'voll'
+                    dayElement.classList.remove('selected'); // Auswahl aufheben
+                }
             } else {
                 timeSlotsContainer.classList.add('time-slots-grid');
                 
@@ -492,12 +524,23 @@ export default class BookingSystem {
                 });
                 
                 this.disableNextButton();
+                 // Stelle sicher, dass der Tag als verfügbar markiert ist (falls er vorher disabled war)
+                 if (dayElement) {
+                    dayElement.classList.add('available');
+                    dayElement.classList.remove('disabled');
+                 }
             }
 
         } catch (error) {
             console.error('Fehler beim Aktualisieren der Zeit-Slots:', error);
             timeSlotsContainer.innerHTML = '<p>Fehler beim Laden der Zeiten.</p>';
             this.disableNextButton();
+             // Tag im Kalender als nicht verfügbar markieren (optional, bei Fehler)
+             if (dayElement) {
+                 dayElement.classList.remove('available');
+                 dayElement.classList.add('disabled');
+                 dayElement.classList.remove('selected');
+             }
         }
     }
 
