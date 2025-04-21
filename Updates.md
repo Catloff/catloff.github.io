@@ -1,5 +1,13 @@
 # Projekt-Updates
 
+## {CurrentDate} - Fehlerbehebung Buchungssystem
+- **Problem:** Buchungen schlugen fehl wegen "Missing or insufficient permissions" und eine Fehlermeldung ("Kein gültiger Termin ausgewählt") erschien, obwohl ein Termin ausgewählt war.
+- **Ursache 1 (Berechtigungen):** Die Firestore-Sicherheitsregeln (`firestore.rules`) für das Erstellen von Buchungen (`allow create` unter `/buchungen/{buchungId}`) validierten die gesendeten Daten nicht korrekt (fehlendes `customer`-Objekt, kein separates `time`-Feld).
+- **Lösung 1:** Die `allow create`-Regel in `firestore.rules` wurde angepasst, um die tatsächliche Struktur der gesendeten `bookingData` aus `js/booking.js` (direkte Felder `name`, `email`, `duration`, kombiniertes `date` als Timestamp) zu prüfen.
+- **Ursache 2 (Fehlermeldung/Doppelte Ausführung):** Das `BookingSystem` wurde zweimal initialisiert: einmal direkt in `js/booking.js` und einmal in `js/main.js`. Dies führte dazu, dass der Formular-Submit-Handler doppelt registriert wurde, was die irreführende Fehlermeldung und das doppelte Absenden verursachte.
+- **Lösung 2:** Die redundante Initialisierung (`new BookingSystem();`) am Ende von `js/booking.js` wurde entfernt. Die Initialisierung erfolgt nun nur noch zentral in `js/main.js`.
+- **Ergebnis:** Buchungen sollten nun korrekt und ohne Berechtigungsfehler oder irreführende Meldungen gespeichert werden.
+
 ## {Datum} - Anpassungen Buchungsprozess
 - **Ziel:** UI-Verbesserung (Kundenansicht) und zusätzliche Info für Admin (Mama).
 - **Frontend (`js/booking.js`):**

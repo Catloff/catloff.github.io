@@ -639,4 +639,4 @@ export default class BookingSystem {
 
 // Direkte Instanziierung, wenn das Skript als Modul geladen wird
 // Der Konstruktor behandelt das DOMContentLoaded Event bereits.
-new BookingSystem(); 
+// new BookingSystem(); // Entfernt, da die Initialisierung in main.js erfolgt 

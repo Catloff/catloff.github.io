@@ -19,15 +19,16 @@ service cloud.firestore {
     // === Buchungen ===
     match /buchungen/{buchungId} {
       // Erstellen: Jeder (auch anonym), mit Datenvalidierung.
-      // Angepasst von alten Regeln, KEIN request.auth Check hier.
+      // Angepasst an die Struktur von bookingData in booking.js
       allow create: if request.resource.data.status == 'angefragt' &&
                        request.resource.data.date is timestamp &&
-                       request.resource.data.time is string &&
-                       request.resource.data.customer.name is string &&
-                       request.resource.data.customer.name.size() > 0 &&
-                       request.resource.data.customer.email is string &&
-                       request.resource.data.customer.email.matches('.+@.+\\..+'); // Einfache E-Mail-Prüfung
-                       // Optional: Füge hier Prüfungen für duration, treatment etc. hinzu, wenn die Website sie sendet!
+                       // request.resource.data.time is string && // Entfernt, da Zeit in 'date' enthalten ist
+                       request.resource.data.name is string && // Direkt auf name zugreifen
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.email is string && // Direkt auf email zugreifen
+                       request.resource.data.email.matches('.+@.+\\..+') && // Einfache E-Mail-Prüfung
+                       request.resource.data.duration is number; // Dauer hinzugefügt
+                       // Optional: Füge hier Prüfungen für phone, notes etc. hinzu
 
       // Lesen: Jeder darf lesen (für Verfügbarkeitsprüfung durch Website).
       // Angepasst von alten Regeln.
