@@ -367,3 +367,9 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 - Sendet eine E-Mail mit den Formulardaten an `info@dsm-kite.de`.
 - Verwendet den bestehenden Nodemailer-Transport.
 - Sendet *keine* Bestätigungs-E-Mail an den Absender.
+
+## {Datum} - "Über mich"-Sektion hinzugefügt
+- Neue `<section id="uber-mich">` in `index.html` eingefügt.
+- Neues Profilbild (`IMG_20250421_131615.jpg`) eingebunden.
+- Platzhaltertext für die Beschreibung hinzugefügt.
+- CSS-Klassen `about-me-section` und `profile-image` hinzugefügt für mögliches späteres Styling.
