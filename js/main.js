@@ -1,8 +1,8 @@
 // Main JavaScript file
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import BookingSystem from './booking.js';
-import { db } from './firebase.js';
+import { db, auth } from './firebase.js';
 import { initializeAuthCheck } from './auth.js';
 
 // --- Cookie Consent --- 
