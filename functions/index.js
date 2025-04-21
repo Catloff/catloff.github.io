@@ -41,15 +41,16 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
         const bookingId = context.params.bookingId;
         functions.logger.log(`Neue Buchung (${bookingId}) erkannt:`, bookingData);
 
-        // --- Gemeinsame Datenextraktion (mit Fallbacks) ---
-        const customerName = bookingData.customer?.name || 'Unbekannt';
-        const customerEmail = bookingData.customer?.email;
-        const customerPhone = bookingData.customer?.phone || 'Keine Angabe';
-        const bookingTime = bookingData.time || 'Unbekannte Zeit';
-        const bookingDateRaw = bookingData.date?.toDate();
+        // --- Gemeinsame Datenextraktion (ANGEPASST an neue Struktur) ---
+        const customerName = bookingData.name || 'Unbekannt'; // Direkt aus bookingData.name
+        const customerEmail = bookingData.email; // Direkt aus bookingData.email
+        const customerPhone = bookingData.phone || 'Keine Angabe'; // Direkt aus bookingData.phone
+        const bookingDateRaw = bookingData.date?.toDate(); // Ist immer noch korrekt
+        // Extrahiere Datum und Zeit aus dem Timestamp
         const bookingDate = bookingDateRaw ? bookingDateRaw.toLocaleDateString('de-DE') : 'Unbekanntes Datum';
-        const notes = bookingData.customer?.notes || 'Keine';
-        const treatmentName = bookingData.treatment?.name || "Behandlung"; // Für Push hinzugefügt
+        const bookingTime = bookingDateRaw ? `${bookingDateRaw.getHours().toString().padStart(2, '0')}:${bookingDateRaw.getMinutes().toString().padStart(2, '0')}` : 'Unbekannte Zeit';
+        const notes = bookingData.notes || 'Keine'; // Direkt aus bookingData.notes
+        // const treatmentName = bookingData.treatment?.name || "Behandlung"; // Behandlung wird aktuell nicht übermittelt, auskommentiert
 
         // --- 1. Push-Benachrichtigung senden (NUR wenn Status 'angefragt') ---
         if (bookingData.status === "angefragt") {

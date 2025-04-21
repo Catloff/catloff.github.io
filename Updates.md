@@ -1,5 +1,14 @@
 # Projekt-Updates
 
+## {CurrentDate} - Korrektur Buchungs-E-Mail & Cloud Function Anpassung
+- **Problem:** Die per Cloud Function (`handleNewBooking`) versendete Admin-Benachrichtigungs-E-Mail enthielt keine korrekten Buchungsdetails (Name, E-Mail, Zeit etc.), sondern nur "Unbekannt" oder "Keine Angabe".
+- **Ursache:** Die Cloud Function in `functions/index.js` war nicht an die geänderte Datenstruktur angepasst, die vom Frontend (`js/booking.js`) in Firestore gespeichert wird. Sie versuchte weiterhin, Daten aus einem nicht mehr existenten `customer`-Objekt und einem separaten `time`-Feld zu lesen.
+- **Lösung:** Die Datenextraktion innerhalb der `handleNewBooking`-Funktion wurde korrigiert:
+    - Liest `name`, `email`, `phone` und `notes` jetzt direkt aus dem `bookingData`-Objekt.
+    - Extrahiert die `bookingTime` korrekt aus dem `date`-Timestamp-Feld.
+    - Die Variable `treatmentName` wurde auskommentiert, da keine Behandlungsinformationen übermittelt werden.
+- **Nächster Schritt:** Die Firebase Cloud Functions müssen neu deployed werden, damit diese Änderung wirksam wird.
+
 ## {CurrentDate} - Fehlerbehebung Buchungssystem
 - **Problem:** Buchungen schlugen fehl wegen "Missing or insufficient permissions" und eine Fehlermeldung ("Kein gültiger Termin ausgewählt") erschien, obwohl ein Termin ausgewählt war.
 - **Ursache 1 (Berechtigungen):** Die Firestore-Sicherheitsregeln (`firestore.rules`) für das Erstellen von Buchungen (`allow create` unter `/buchungen/{buchungId}`) validierten die gesendeten Daten nicht korrekt (fehlendes `customer`-Objekt, kein separates `time`-Feld).
