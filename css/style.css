@@ -1598,6 +1598,7 @@ footer {
     padding: 1rem;
     max-width: 800px;
     color: #333;
+    background-color: transparent; /* Explizit setzen, um unerwünschte Hintergründe zu vermeiden */
 }
 
 .quote p {
@@ -1615,6 +1616,7 @@ footer {
 .method-card p,
 .method-explanation p,
 .contact-info p,
-.footer-section p {
+.footer-section p,
+section p /* Allgemeinerer Selektor für Blocksatz */ {
     text-align: justify;
 } 
