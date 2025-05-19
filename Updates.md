@@ -426,3 +426,15 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
   - Aktualisierte Beschreibungen für Kinesiologie, Trauma und Entkopplung
   - Detailliertere Erklärung der KiTE® Methode mit Fokus auf Selbstregulation und Blockadenlösung
   - Persönlicher Text in der "Über mich"-Sektion mit Fokus auf eigene Erfahrungen und Motivation
+
+## 2024-03-26 - Styling-Anpassungen
+- Zitat-Styling überarbeitet:
+  - Blaue Hintergrundfarbe entfernt
+  - Maximale Breite auf 800px erhöht
+  - Textfarbe auf #333 angepasst
+- Blocksatz für alle Textabschnitte implementiert:
+  - Haupttext
+  - Methoden-Karten
+  - Methoden-Erklärungen
+  - Kontaktinformationen
+  - Footer-Text

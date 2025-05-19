@@ -1596,8 +1596,8 @@ footer {
     text-align: center;
     margin: 2rem auto;
     padding: 1rem;
-    max-width: 600px;
-    color: #666;
+    max-width: 800px;
+    color: #333;
 }
 
 .quote p {
@@ -1608,4 +1608,13 @@ footer {
 .quote footer {
     font-size: 0.9rem;
     color: #888;
+}
+
+/* Blocksatz für alle Textabschnitte */
+.text-content p,
+.method-card p,
+.method-explanation p,
+.contact-info p,
+.footer-section p {
+    text-align: justify;
 } 
