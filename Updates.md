@@ -419,3 +419,10 @@ Diese Änderungen sollen helfen, Probleme mit dem TinyMCE-Editor im Admin-Panel 
 *   **(2024-07-25 11:00)** - Aufruf von `InitializeCookieConsent` in `js/main.js` ans Ende des `DOMContentLoaded` verschoben und Logging hinzugefügt.
 *   **(2024-07-25 11:15)** - Korrektur in `js/main.js`: `auth`-Instanz aus `js/firebase.js` importiert, um `auth is not defined`-Fehler beim Admin-Login zu beheben.
 *   **(2024-07-25 11:30)** - Cookie-Banner aktualisiert: Buttons auf "Akzeptieren" / "Nur erforderliche" geändert, Bannertext angepasst (HTML), localStorage-Wert für zweite Option auf "necessary" gesetzt (JS).
+
+## 2024-03-26
+- Textaktualisierungen in der "Über die KiTE® Methode"-Sektion:
+  - Neuer Einführungstext mit Fokus auf ganzheitliche Behandlung und Energiefluss
+  - Aktualisierte Beschreibungen für Kinesiologie, Trauma und Entkopplung
+  - Detailliertere Erklärung der KiTE® Methode mit Fokus auf Selbstregulation und Blockadenlösung
+  - Persönlicher Text in der "Über mich"-Sektion mit Fokus auf eigene Erfahrungen und Motivation

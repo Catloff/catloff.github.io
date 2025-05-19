@@ -1589,4 +1589,23 @@ footer {
         width: 100%;
         justify-content: center;
     }
+}
+
+.quote {
+    font-style: italic;
+    text-align: center;
+    margin: 2rem auto;
+    padding: 1rem;
+    max-width: 600px;
+    color: #666;
+}
+
+.quote p {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.quote footer {
+    font-size: 0.9rem;
+    color: #888;
 } 

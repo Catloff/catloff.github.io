@@ -50,7 +50,7 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
         const bookingDate = bookingDateRaw ? bookingDateRaw.toLocaleDateString('de-DE') : 'Unbekanntes Datum';
         const bookingTime = bookingDateRaw ? `${bookingDateRaw.getHours().toString().padStart(2, '0')}:${bookingDateRaw.getMinutes().toString().padStart(2, '0')}` : 'Unbekannte Zeit';
         const notes = bookingData.notes || 'Keine'; // Direkt aus bookingData.notes
-        // const treatmentName = bookingData.treatment?.name || "Behandlung"; // Behandlung wird aktuell nicht übermittelt, auskommentiert
+        // const treatmentName = bookingData.treatment?.name || "Behandlung"; // Auskommentiert, da nicht verwendet/übermittelt
 
         // --- 1. Push-Benachrichtigung senden (NUR wenn Status 'angefragt') ---
         if (bookingData.status === "angefragt") {
@@ -70,14 +70,15 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
                 });
 
                 if (tokens.length > 0) {
-                    // Payload erstellen
+                    // Payload erstellen (ANGEPASST: ohne treatmentName)
                     const payload = {
                         notification: {
                             title: "Neue Buchungsanfrage!",
-                            body: `${customerName} möchte einen Termin (${treatmentName}) um ${bookingTime} Uhr buchen.`,
-                            sound: "default" // Standard-Benachrichtigungston
+                            // KORREKTUR: Text angepasst, da treatmentName nicht verfügbar ist
+                            body: `${customerName} möchte einen Termin um ${bookingTime} Uhr buchen.`,
+                            sound: "default"
                         },
-                        data: { // Optionale Daten für die App
+                        data: {
                             bookingId: bookingId,
                             click_action: "FLUTTER_NOTIFICATION_CLICK"
                         }
@@ -88,28 +89,25 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
                     const response = await admin.messaging().sendToDevice(tokens, payload);
                     functions.logger.log("Push-Benachrichtigung erfolgreich gesendet:", response);
 
-                    // Optional: Ungültige Tokens aufräumen (siehe vorheriges Beispiel)
-                    // ... Logik zum Entfernen ungültiger Tokens ...
-
                 } else {
                     functions.logger.warn("Keine Admin-Geräte-Tokens in 'admin_devices' gefunden. Push-Benachrichtigung kann nicht gesendet werden.");
                 }
             } catch (error) {
                 functions.logger.error(`Fehler beim Senden der Push-Benachrichtigung für Buchung ${bookingId}:`, error);
-                // Fehler hier sollte den E-Mail-Versand nicht blockieren
             }
         } else {
             functions.logger.log(`Buchung ${bookingId} hat Status '${bookingData.status}'. Keine Push-Benachrichtigung gesendet.`);
         }
 
-        // --- 2. Zähle vorherige Buchungen (Logik bleibt wie vorher) ---
+        // --- 2. Zähle vorherige Buchungen ---
         let customerStatus = "Erstbuchung";
         if (customerEmail) {
             try {
                 const bookingsRef = admin.firestore().collection('buchungen');
+                // ANNAHME: Du willst jetzt nach 'email' direkt im Dokument suchen, nicht mehr in 'customer.email'
                 const previousBookingsQuery = bookingsRef
-                    .where('customer.email', '==', customerEmail)
-                    .where(FieldPath.documentId(), '!=', bookingId); // Schließe die aktuelle Buchung aus
+                    .where('email', '==', customerEmail) // Angepasst an neue Struktur
+                    .where(FieldPath.documentId(), '!=', bookingId);
 
                 const querySnapshot = await previousBookingsQuery.get();
                 const previousBookingsCount = querySnapshot.size;
@@ -126,36 +124,36 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
              customerStatus = "Unbekannt (keine E-Mail)";
         }
 
-        // --- 3. E-Mail-Versand (Logik bleibt wie vorher) ---
+        // --- 3. E-Mail-Versand ---
         if (!transporter) {
             functions.logger.error('Nodemailer Transporter nicht verfügbar. Kann keine E-Mails senden.');
-            return; // Beenden, wenn Transporter nicht initialisiert werden konnte
+            return;
         }
         if (!emailUser) {
              functions.logger.error('E-Mail-Benutzer (Absender) nicht konfiguriert.');
              return;
         }
 
-        const mamaEmail = emailUser; // Sende an die konfigurierte Admin-Email
+        const mamaEmail = emailUser;
 
-        // 3.1 E-Mail an Mama (Admin)
+        // 3.1 E-Mail an Mama (Admin) (Angepasst an neue Struktur, ohne treatmentName)
         const mailToAdmin = {
             from: `"KiTE® Website Buchung" <${emailUser}>`,
             to: mamaEmail,
             subject: `Neue Terminanfrage: ${customerName} (${customerStatus}) am ${bookingDate} um ${bookingTime}`,
-            text: `Hallo Dani,\n\nEs gibt eine neue Terminanfrage über die Website:\n\nKundenstatus: ${customerStatus}\nName: ${customerName}\nE-Mail: ${customerEmail || 'Keine Angabe'}\nTelefon: ${customerPhone}\nDatum: ${bookingDate}\nUhrzeit: ${bookingTime}\nAnmerkungen: ${notes}\n\nBuchungs-ID: ${bookingId}\n\nDu musst diesen Termin noch in der Admin-App bestätigen oder ablehnen.\n\nViele Grüße,\nDeine Website`, // Text angepasst
-            html: `<p>Hallo Dani,</p><p>Es gibt eine neue Terminanfrage über die Website:</p><ul><li><b>Kundenstatus:</b> ${customerStatus}</li><li><b>Name:</b> ${customerName}</li><li><b>E-Mail:</b> ${customerEmail || 'Keine Angabe'}</li><li><b>Telefon:</b> ${customerPhone}</li><li><b>Datum:</b> ${bookingDate}</li><li><b>Uhrzeit:</b> ${bookingTime}</li><li><b>Anmerkungen:</b> ${notes}</li></ul><p>Buchungs-ID: ${bookingId}</p><p><b>Du musst diesen Termin noch in der Admin-App bestätigen oder ablehnen.</b></p><p>Viele Grüße,<br/>Deine Website</p>` // Text angepasst
+            text: `Hallo Dani,\n\nEs gibt eine neue Terminanfrage über die Website:\n\nKundenstatus: ${customerStatus}\nName: ${customerName}\nE-Mail: ${customerEmail || 'Keine Angabe'}\nTelefon: ${customerPhone}\nDatum: ${bookingDate}\nUhrzeit: ${bookingTime}\nAnmerkungen: ${notes}\n\nBuchungs-ID: ${bookingId}\n\nDu musst diesen Termin noch in der Admin-App bestätigen oder ablehnen.\n\nViele Grüße,\nDeine Website`,
+            html: `<p>Hallo Dani,</p><p>Es gibt eine neue Terminanfrage über die Website:</p><ul><li><b>Kundenstatus:</b> ${customerStatus}</li><li><b>Name:</b> ${customerName}</li><li><b>E-Mail:</b> ${customerEmail || 'Keine Angabe'}</li><li><b>Telefon:</b> ${customerPhone}</li><li><b>Datum:</b> ${bookingDate}</li><li><b>Uhrzeit:</b> ${bookingTime}</li><li><b>Anmerkungen:</b> ${notes}</li></ul><p>Buchungs-ID: ${bookingId}</p><p><b>Du musst diesen Termin noch in der Admin-App bestätigen oder ablehnen.</b></p><p>Viele Grüße,<br/>Deine Website</p>`
         };
 
-        // 3.2 E-Mail an Kunden
+        // 3.2 E-Mail an Kunden (Angepasst an neue Struktur, ohne treatmentName)
         let mailToCustomer = null;
         if (customerEmail) {
             mailToCustomer = {
                 from: `"Dani Sieck-Mitzloff (KiTE® Methode)" <${emailUser}>`,
                 to: customerEmail,
                 subject: `Deine Terminanfrage für die KiTE® Methode am ${bookingDate}`,
-                text: `Hallo ${customerName},\n\nvielen Dank für deine Terminanfrage für die KiTE® Methode am ${bookingDate} um ${bookingTime}.\n\nDeine Anfrage wurde erfolgreich übermittelt und wird schnellstmöglich bearbeitet. Du erhältst eine separate Bestätigung per E-Mail, sobald der Termin final feststeht.\n\nBei Fragen erreichst du mich unter ${mamaEmail} oder telefonisch.\n\nHerzliche Grüße,\nDani Sieck-Mitzloff`, // Text angepasst
-                html: `<p>Hallo ${customerName},</p><p>vielen Dank für deine Terminanfrage für die KiTE® Methode am ${bookingDate} um ${bookingTime}.</p><p>Deine Anfrage wurde erfolgreich übermittelt und wird schnellstmöglich bearbeitet. Du erhältst eine separate Bestätigung per E-Mail, sobald der Termin final feststeht.</p><p>Bei Fragen erreichst du mich unter <a href="mailto:${mamaEmail}">${mamaEmail}</a> oder telefonisch.</p><p>Herzliche Grüße,<br/>Dani Sieck-Mitzloff</p>` // Text angepasst
+                text: `Hallo ${customerName},\n\nvielen Dank für deine Terminanfrage für die KiTE® Methode am ${bookingDate} um ${bookingTime}.\n\nDeine Anfrage wurde erfolgreich übermittelt und wird schnellstmöglich bearbeitet. Du erhältst eine separate Bestätigung per E-Mail, sobald der Termin final feststeht.\n\nBei Fragen erreichst du mich unter ${mamaEmail} oder telefonisch.\n\nHerzliche Grüße,\nDani Sieck-Mitzloff`,
+                html: `<p>Hallo ${customerName},</p><p>vielen Dank für deine Terminanfrage für die KiTE® Methode am ${bookingDate} um ${bookingTime}.</p><p>Deine Anfrage wurde erfolgreich übermittelt und wird schnellstmöglich bearbeitet. Du erhältst eine separate Bestätigung per E-Mail, sobald der Termin final feststeht.</p><p>Bei Fragen erreichst du mich unter <a href="mailto:${mamaEmail}">${mamaEmail}</a> oder telefonisch.</p><p>Herzliche Grüße,<br/>Dani Sieck-Mitzloff</p>`
             };
         } else {
             functions.logger.warn(`Keine Kunden-E-Mail für Buchung ${bookingId} angegeben. Es wird keine Bestätigung gesendet.`);
