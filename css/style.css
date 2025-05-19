@@ -125,6 +125,7 @@ main {
     color: var(--text-color);
     margin-bottom: calc(var(--spacing-unit) * 2);
     line-height: 1.6;
+    text-align: center;
 }
 
 .cta-button {
@@ -1609,6 +1610,9 @@ footer {
 .quote footer {
     font-size: 0.9rem;
     color: #888;
+    background-color: transparent; /* Sicherstellen, dass kein Hintergrund vorhanden ist */
+    padding: 0; /* Sicherstellen, dass kein Padding ein Kästchen erzeugt */
+    border: none; /* Sicherstellen, dass kein Rahmen vorhanden ist */
 }
 
 /* Blocksatz für alle Textabschnitte */
