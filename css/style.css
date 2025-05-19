@@ -1595,7 +1595,7 @@ footer {
 .quote {
     font-style: italic;
     text-align: center;
-    margin: 0.5rem auto; /* Zentriert den Block, behält deinen vertikalen Abstand bei */
+    margin: 2.5rem auto; /* Zentriert den Block, behält deinen vertikalen Abstand bei */
     padding: 0.5rem; /* Dein gewünschtes Padding */
     max-width: 800px;
     color: #333;
@@ -1611,15 +1611,20 @@ footer {
 }
 
 .quote footer {
-    text-align: center; /* Zentriert den Autor-Text */
-    font-size: 1.2rem; /* Deine gewünschte Schriftgröße */
+    text-align: center; 
+    font-size: 1.2rem; 
     color: #888;
     background-color: transparent; 
     padding: 0; 
     border: none; 
     margin-top: 0; 
-    margin-bottom: 2.5rem;
+    margin-bottom: 0.1rem; /* Korrigiert: kleiner Abstand nach dem Autor */
     line-height: 1.2; 
+}
+
+/* Abstand über und unter Zitat angleichen */
+.quote + h2 {
+    margin-top: 0; /* Entfernt den oberen Rand der H2, die auf das Zitat folgt */
 }
 
 /* Blocksatz für alle Textabschnitte */
