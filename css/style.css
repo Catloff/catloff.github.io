@@ -1595,31 +1595,30 @@ footer {
 .quote {
     font-style: italic;
     text-align: center;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
+    margin: 0.5rem auto; /* Zentriert den Block, behält deinen vertikalen Abstand bei */
+    padding: 0.5rem; /* Dein gewünschtes Padding */
     max-width: 800px;
     color: #333;
-    background-color: transparent; /* Explizit setzen, um unerwünschte Hintergründe zu vermeiden */
+    background-color: transparent; /* Sicherstellen, dass kein Hintergrund vorhanden ist */
 }
 
 .quote p {
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 0.1rem; /* Reduziert von 0.5rem */
+    text-align: center; /* Stellt sicher, dass der Text im p-Element zentriert ist */
+    font-size: 1.5rem; /* Deine gewünschte Schriftgröße */
+    margin-bottom: 0.1rem; /* Dein gewünschter unterer Rand */
     margin-top: 0; /* Explizit auf 0 setzen */
-    line-height: 1.2; /* Zeilenhöhe anpassen */
+    line-height: 1.2; /* Deine gewünschte Zeilenhöhe */
 }
 
 .quote footer {
-    text-align: center;
-    font-size: 1.2rem;
+    text-align: center; /* Zentriert den Autor-Text */
+    font-size: 1.2rem; /* Deine gewünschte Schriftgröße */
     color: #888;
-    background-color: transparent; /* Sicherstellen, dass kein Hintergrund vorhanden ist */
-    padding: 0; /* Sicherstellen, dass kein Padding ein Kästchen erzeugt */
-    border: none; /* Sicherstellen, dass kein Rahmen vorhanden ist */
-    margin-top: 0; /* Explizit auf 0 setzen */
-    line-height: 1.2; /* Zeilenhöhe anpassen */
+    background-color: transparent; 
+    padding: 0; 
+    border: none; 
+    margin-top: 0; 
+    line-height: 1.2; 
 }
 
 /* Blocksatz für alle Textabschnitte */
