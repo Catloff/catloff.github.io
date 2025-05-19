@@ -1595,7 +1595,8 @@ footer {
 .quote {
     font-style: italic;
     text-align: center;
-    margin: 2rem auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     padding: 0.5rem;
     max-width: 800px;
     color: #333;
@@ -1603,14 +1604,16 @@ footer {
 }
 
 .quote p {
-    font-size: 1.2rem;
+    text-align: center;
+    font-size: 1.5rem;
     margin-bottom: 0.1rem; /* Reduziert von 0.5rem */
     margin-top: 0; /* Explizit auf 0 setzen */
     line-height: 1.2; /* Zeilenhöhe anpassen */
 }
 
 .quote footer {
-    font-size: 0.9rem;
+    text-align: center;
+    font-size: 1.2rem;
     color: #888;
     background-color: transparent; /* Sicherstellen, dass kein Hintergrund vorhanden ist */
     padding: 0; /* Sicherstellen, dass kein Padding ein Kästchen erzeugt */
