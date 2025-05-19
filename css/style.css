@@ -1604,7 +1604,7 @@ footer {
 
 .quote p {
     font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem; /* Reduziert von 0.5rem */
 }
 
 .quote footer {
