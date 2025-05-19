@@ -1596,7 +1596,7 @@ footer {
     font-style: italic;
     text-align: center;
     margin: 2rem auto;
-    padding: 1rem;
+    padding: 0.5rem;
     max-width: 800px;
     color: #333;
     background-color: transparent; /* Explizit setzen, um unerwünschte Hintergründe zu vermeiden */
@@ -1605,6 +1605,8 @@ footer {
 .quote p {
     font-size: 1.2rem;
     margin-bottom: 0.1rem; /* Reduziert von 0.5rem */
+    margin-top: 0; /* Explizit auf 0 setzen */
+    line-height: 1.2; /* Zeilenhöhe anpassen */
 }
 
 .quote footer {
@@ -1613,6 +1615,8 @@ footer {
     background-color: transparent; /* Sicherstellen, dass kein Hintergrund vorhanden ist */
     padding: 0; /* Sicherstellen, dass kein Padding ein Kästchen erzeugt */
     border: none; /* Sicherstellen, dass kein Rahmen vorhanden ist */
+    margin-top: 0; /* Explizit auf 0 setzen */
+    line-height: 1.2; /* Zeilenhöhe anpassen */
 }
 
 /* Blocksatz für alle Textabschnitte */
