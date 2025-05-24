@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics } from "firebase/analytics";
 
 console.log('Initialisiere Firebase...');
 
@@ -33,6 +34,7 @@ let app = null;
 let auth = null;
 let db = null;
 let storage = null;
+let analytics = null;
 
 try {
     app = initializeApp(firebaseConfig);
@@ -41,10 +43,11 @@ try {
     auth = getAuth(app);
     db = getFirestore(app);
     storage = getStorage(app);
-    console.log('Firestore initialisiert');
+    analytics = getAnalytics(app);
+    console.log('Firestore und Analytics initialisiert');
 } catch (error) {
     console.error('Fehler bei der Firebase-Initialisierung:', error);
 }
 
 // Export auf oberster Ebene
-export { app, auth, db, storage }; 
+export { app, auth, db, storage, analytics }; 
