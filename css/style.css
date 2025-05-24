@@ -1641,4 +1641,14 @@ footer {
 .footer-section p,
 section p /* Allgemeinerer Selektor für Blocksatz */ {
     text-align: justify;
+}
+
+.contact-decoration-image {
+    width: 100%; /* Nimmt die volle Breite des Containers ein */
+    max-width: 300px; /* Maximale Breite, um nicht zu riesig zu werden */
+    height: auto; /* Höhe automatisch anpassen */
+    display: block; /* Um margin auto verwenden zu können und als Blockelement zu behandeln */
+    margin: 2rem auto 0; /* Oberer Abstand, zentriert, kein unterer Abstand (oder anpassen bei Bedarf) */
+    border-radius: 8px; /* Leicht abgerundete Ecken */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Dezenter Schatten */
 } 
