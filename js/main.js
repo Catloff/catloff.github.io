@@ -3,7 +3,6 @@ import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import BookingSystem from './booking.js';
 import { db, auth } from './firebase.js';
-import { initializeAuthCheck } from './auth.js';
 
 // --- Cookie Consent --- 
 function InitializeCookieConsent() {
@@ -56,9 +55,6 @@ function InitializeCookieConsent() {
 // Website Initialisierung
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Website geladen (DOMContentLoaded Start)');
-
-    // Auth-Check initialisieren, um Overlay zu steuern
-    initializeAuthCheck();
 
     // Mobile Navigation
     const mobileMenuButton = document.querySelector('.mobile-menu');
@@ -153,42 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Admin Login Handler (im Overlay)
-    const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('loginError');
-    if (loginForm && loginError) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Verhindert das Neuladen der Seite
-            const email = loginForm.loginEmail.value;
-            const password = loginForm.loginPassword.value;
-            loginError.textContent = ''; // Fehlermeldung zurücksetzen
-            loginError.style.display = 'none';
-
-            try {
-                console.log('Versuche Admin-Login für:', email);
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                console.log('Admin-Login erfolgreich:', userCredential.user.email);
-                // Das Overlay wird automatisch durch onAuthStateChanged in auth.js ausgeblendet
-            } catch (error) {
-                console.error('Admin-Login fehlgeschlagen:', error.code, error.message);
-                loginError.textContent = 'Login fehlgeschlagen. Bitte E-Mail und Passwort prüfen.'; // Zeige generische Fehlermeldung
-                loginError.style.display = 'block';
-            }
-        });
-    }
-    
-    // Test der Firebase-Verbindung (kann entfernt oder belassen werden)
-    /*
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log('Benutzer ist eingeloggt:', user.uid);
-        } else {
-            console.log('Kein Benutzer eingeloggt');
-        }
-    });
-    */
 
     // Cookie Consent GANZ AM ENDE initialisieren, wenn der Rest des DOM sicher bereit ist
     console.log('Initialisiere Cookie Consent (am Ende von DOMContentLoaded)');
