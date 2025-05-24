@@ -1627,6 +1627,12 @@ footer {
     margin-top: 0; /* Entfernt den oberen Rand der H2, die auf das Zitat folgt */
 }
 
+.external-link-paragraph {
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
 /* Blocksatz für alle Textabschnitte */
 .text-content p,
 .method-card p,
