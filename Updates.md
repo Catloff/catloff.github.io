@@ -1,5 +1,10 @@
 # Projekt-Updates
 
+## {CurrentDate} - Neue Behandlungsmethode hinzugefügt
+- Eine neue Behandlungsmethode "Kurzbehandlung" wurde zu den Sitzungen hinzugefügt.
+  - Dauer: 30 Minuten
+  - Preis: 40 €
+
 ## {CurrentDate} - Korrektur Buchungs-E-Mail & Cloud Function Anpassung
 - **Problem:** Die per Cloud Function (`handleNewBooking`) versendete Admin-Benachrichtigungs-E-Mail enthielt keine korrekten Buchungsdetails (Name, E-Mail, Zeit etc.), sondern nur "Unbekannt" oder "Keine Angabe".
 - **Ursache:** Die Cloud Function in `functions/index.js` war nicht an die geänderte Datenstruktur angepasst, die vom Frontend (`js/booking.js`) in Firestore gespeichert wird. Sie versuchte weiterhin, Daten aus einem nicht mehr existenten `customer`-Objekt und einem separaten `time`-Feld zu lesen.
@@ -283,7 +288,7 @@ Das CMS-System wurde mit folgenden Anpassungen konfiguriert:
 3. **GitHub Action Workflow aktualisiert**:
    - Workflow `.github/workflows/firebase-sync.yml` verwendet jetzt das neue Sync-Script
    - Kann manuell oder durch Firebase-Events ausgelöst werden
-   - Triggert nach erfolgreicher Synchronisierung einen neuen Build
+   - Triggert nach erfolgreicher Synchronisation einen neuen Build
 
 4. **TinyMCE-Integration korrigiert**:
    - API-Key wird jetzt korrekt aus den Umgebungsvariablen in admin.html eingesetzt
