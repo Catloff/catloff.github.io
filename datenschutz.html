@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutz - KiTE® Methode</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Einfache Styles für bessere Lesbarkeit der rechtlichen Texte (identisch zu impressum.html) */
+        main.legal-content {
+            max-width: 800px;
+            margin: calc(var(--nav-height) + 2rem) auto 2rem;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        main.legal-content h1 {
+            color: var(--secondary-color); /* Grün */
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        main.legal-content h2 {
+            color: var(--primary-color); /* Hellblau */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        main.legal-content p, 
+        main.legal-content ul {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        main.legal-content ul {
+            padding-left: 20px;
+        }
+        main.legal-content a {
+            color: var(--primary-color);
+        }
+        main.legal-content a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <img src="assets/images/kite_logo.webp" alt="KiTE Logo" height="40">
+                <a href="/">Methode</a>
+            </div>
+            <ul class="nav-links">
+                 <li><a href="/index.html#methode">Methode</a></li>
+                 <li><a href="/index.html#leistungen">Leistungen</a></li>
+                 <li><a href="/index.html#termine">Termine</a></li>
+                 <li><a href="/index.html#uber-mich">Über mich</a></li>
+                 <li><a href="/index.html#kontakt">Kontakt</a></li>
+            </ul>
+             <button class="mobile-menu" aria-label="Menü öffnen">
+                 <span></span>
+                 <span></span>
+                 <span></span>
+             </button>
+        </nav>
+    </header>
+
+    <!-- Header kommt als nächstes -->
+    
+    <main class="legal-content">
+        <h1>Datenschutzerklärung</h1>
+
+        <p>Wir freuen uns über Ihr Interesse an unserer Website. Der Schutz Ihrer Privatsphäre ist für uns sehr wichtig. Nachstehend informieren wir Sie ausführlich über den Umgang mit Ihren Daten.</p>
+
+        <h2>1. Verantwortlicher und Kontakt</h2>
+        <p>Verantwortlicher für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
+        <p>
+            Daniela Sieck-Mitzloff<br>
+            Johann-Hinrich-Fehrs-Str. 18<br>
+            24623 Großenaspe<br>
+            E-Mail: info@dsm-kite.de
+            <!-- Telefon: [Hier ggf. Telefonnummer eintragen] -->
+        </p>
+        <p>Bei Fragen zur Erhebung, Verarbeitung oder Nutzung Ihrer personenbezogenen Daten, bei Auskünften, Berichtigung, Sperrung oder Löschung von Daten sowie Widerruf erteilter Einwilligungen oder Widerspruch gegen eine bestimmte Datenverwendung wenden Sie sich bitte direkt an uns über die Kontaktdaten in unserem Impressum.</p>
+
+        <h2>2. Hosting und Bereitstellung der Website</h2>
+        <p>Unsere Website wird teilweise über GitHub Pages und für bestimmte Backend-Funktionen (Datenbank, Serverless Functions, Authentifizierung) über Firebase, einen Dienst von Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland (Mutterkonzern: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA; „Google“) gehostet.</p>
+        
+        <h3>a) Hosting bei GitHub Pages</h3>
+        <p>Wenn Sie unsere Website besuchen, erhebt GitHub als technischer Dienstleister für GitHub Pages Daten über jeden Zugriff auf den Server (sogenannte Server-Logfiles). Zu den Zugriffsdaten gehören Name der abgerufenen Webseite, Datei, Datum und Uhrzeit des Abrufs, übertragene Datenmenge, Meldung über erfolgreichen Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite), IP-Adresse (in der Regel anonymisiert) und der anfragende Provider.</p>
+        <p>Diese Daten werden von GitHub zur Bereitstellung und Verbesserung des Dienstes sowie zur Gewährleistung der Sicherheit und Stabilität der Plattform verarbeitet. Rechtsgrundlage für die Verarbeitung ist unser berechtigtes Interesse an einer effizienten und sicheren Bereitstellung unseres Online-Angebots (Art. 6 Abs. 1 lit. f DSGVO). Weitere Informationen finden Sie in der Datenschutzerklärung von GitHub: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>.</p>
+
+        <h3>b) Nutzung von Firebase</h3>
+        <p>Wir nutzen verschiedene Dienste von Firebase zur Bereitstellung von Funktionen unserer Website. Dazu gehören:</p>
+        <ul>
+            <li>**Firebase Hosting:** Zur Auslieferung bestimmter Teile der Website (falls konfiguriert).</li>
+            <li>**Firestore:** Eine NoSQL-Cloud-Datenbank zur Speicherung von Daten wie Terminanfragen, Kontaktnachrichten und ggf. Benutzerdaten für den Admin-Login.</li>
+            <li>**Firebase Functions:** Serverless Computing zur Ausführung von Backend-Code, z.B. für den automatischen Versand von E-Mail-Benachrichtigungen nach Termin- oder Kontaktanfragen.</li>
+            <li>**Firebase Authentication:** Zur Verwaltung des Admin-Logins für geschützte Bereiche der Website.</li>
+        </ul>
+        <p>Bei der Nutzung von Firebase-Diensten können Daten wie IP-Adressen, Nutzungsdaten und von Ihnen eingegebene Daten (z.B. bei Formularen) an Server von Google in den USA übertragen und dort verarbeitet werden. Google stützt die Datenübermittlung in die USA auf Standardvertragsklauseln der Europäischen Kommission, um ein angemessenes Datenschutzniveau sicherzustellen.</p>
+        <p>Rechtsgrundlage für den Einsatz von Firebase ist unser berechtigtes Interesse an einer funktionalen, sicheren und effizienten Website (Art. 6 Abs. 1 lit. f DSGVO) sowie, bei Funktionen wie der Terminbuchung oder Kontaktaufnahme, die Vertragsanbahnung bzw. -erfüllung (Art. 6 Abs. 1 lit. b DSGVO).</p>
+        <p>Weitere Informationen zum Datenschutz bei Google und Firebase finden Sie unter: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">https://policies.google.com/privacy</a> und <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">https://firebase.google.com/support/privacy</a>.</p>
+
+        <h2>3. Datenverarbeitung bei Kontaktaufnahme</h2>
+        <p>Wenn Sie uns per Kontaktformular oder E-Mail kontaktieren, werden die von Ihnen übermittelten Daten (insbesondere Name, E-Mail-Adresse, Telefonnummer (optional), Betreff und Ihre Nachricht) zur Bearbeitung Ihrer Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten werden in unserer Firestore-Datenbank gespeichert und eine Benachrichtigungs-E-Mail wird über Firebase Functions an uns gesendet.</p>
+        <p>Rechtsgrundlage für die Verarbeitung ist bei Anfragen zur Vertragsanbahnung oder -erfüllung Art. 6 Abs. 1 lit. b DSGVO, ansonsten unser berechtigtes Interesse an der Beantwortung Ihres Anliegens (Art. 6 Abs. 1 lit. f DSGVO).</p>
+        <p>Ihre Daten werden gelöscht, sobald Ihre Anfrage abschließend bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+
+        <h2>4. Datenverarbeitung bei Terminbuchung</h2>
+        <p>Wenn Sie über unsere Website einen Termin anfragen, erheben wir die dafür notwendigen Daten (ausgewählter Termin (Datum/Uhrzeit), Name, E-Mail-Adresse, Telefonnummer (optional), Anmerkungen (optional)). Diese Daten werden zur Bearbeitung Ihrer Terminanfrage, zur Terminbestätigung und -verwaltung benötigt und in unserer Firestore-Datenbank gespeichert. Eine Benachrichtigungs-E-Mail über die Anfrage wird über Firebase Functions an uns und ggf. eine Bestätigungs-E-Mail an Sie gesendet.</p>
+        <p>Rechtsgrundlage für die Verarbeitung ist die Anbahnung und Durchführung eines Vertrages (Art. 6 Abs. 1 lit. b DSGVO).</p>
+        <p>Die Daten werden gespeichert, solange es für die Terminverwaltung und die Erfüllung gesetzlicher Aufbewahrungspflichten (z.B. aus dem Handels- oder Steuerrecht) erforderlich ist.</p>
+
+        <h2>5. Cookies</h2>
+        <p>Unsere Website verwendet Cookies. Cookies sind kleine Textdateien, die auf Ihrem Endgerät gespeichert werden und die Ihr Browser speichert. Sie dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen.</p>
+        <p>Wir unterscheiden zwischen technisch notwendigen Cookies, die für den grundlegenden Betrieb der Website erforderlich sind (z.B. für den Admin-Login über Firebase Authentication), und optionalen Cookies (z.B. für Analyse- oder Marketingzwecke).</p>
+        <ul>
+            <li>**Technisch notwendige Cookies:** Diese sind für die Funktion der Website unerlässlich und können nicht deaktiviert werden. Rechtsgrundlage ist unser berechtigtes Interesse an der Bereitstellung einer funktionsfähigen Website (Art. 6 Abs. 1 lit. f DSGVO bzw. § 25 Abs. 2 TTDSG).</li>
+            <li>**Optionale Cookies:** Der Einsatz von optionalen Cookies (z.B. für Analyse, Marketing) erfolgt nur nach Ihrer ausdrücklichen Einwilligung (Art. 6 Abs. 1 lit. a DSGVO bzw. § 25 Abs. 1 TTDSG). <strong>Hinweis:</strong> Aktuell setzen wir unseres Wissens nach keine rein optionalen Analyse- oder Marketing-Cookies direkt ein. Firebase-Dienste können jedoch Cookies setzen, deren genauer Zweck und Notwendigkeit im Detail geprüft werden müsste. Aus Vorsicht empfehlen wir die Einholung einer Einwilligung für nicht unbedingt notwendige Cookies.</li>
+        </ul>
+        <p>Sie können Ihren Browser so einstellen, dass Sie über das Setzen von Cookies informiert werden und Cookies nur im Einzelfall erlauben, die Annahme von Cookies für bestimmte Fälle oder generell ausschließen sowie das automatische Löschen der Cookies beim Schließen des Browsers aktivieren. Bei der Deaktivierung von Cookies kann die Funktionalität dieser Website eingeschränkt sein.</p>
+        <p><strong>Empfehlung: Cookie-Einwilligungs-Tool (Cookie-Banner):</strong> Um rechtlich sicher zu gehen, insbesondere wegen der Nutzung von Firebase-Diensten, empfehlen wir die Implementierung eines Cookie-Banners, mit dem Sie die Einwilligung der Nutzer für alle nicht technisch notwendigen Cookies einholen können.</p>
+
+        <h2>6. Ihre Rechte als Betroffener</h2>
+        <p>Ihnen stehen bezüglich Ihrer bei uns gespeicherten personenbezogenen Daten folgende Rechte zu:</p>
+        <ul>
+            <li><strong>Recht auf Auskunft (Art. 15 DSGVO):</strong> Sie können Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten verlangen.</li>
+            <li><strong>Recht auf Berichtigung (Art. 16 DSGVO):</strong> Sie können unverzüglich die Berichtigung unrichtiger oder Vervollständigung Ihrer bei uns gespeicherten personenbezogenen Daten verlangen.</li>
+            <li><strong>Recht auf Löschung (Art. 17 DSGVO):</strong> Sie können die Löschung Ihrer bei uns gespeicherten personenbezogenen Daten verlangen, soweit nicht die Verarbeitung zur Ausübung des Rechts auf freie Meinungsäußerung und Information, zur Erfüllung einer rechtlichen Verpflichtung, aus Gründen des öffentlichen Interesses oder zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist.</li>
+            <li><strong>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO):</strong> Sie können die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten verlangen, soweit die Richtigkeit der Daten von Ihnen bestritten wird, die Verarbeitung unrechtmäßig ist, Sie aber deren Löschung ablehnen und wir die Daten nicht mehr benötigen, Sie jedoch diese zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen benötigen oder Sie gemäß Art. 21 DSGVO Widerspruch gegen die Verarbeitung eingelegt haben.</li>
+            <li><strong>Recht auf Datenübertragbarkeit (Art. 20 DSGVO):</strong> Sie können verlangen, Ihre personenbezogenen Daten, die Sie uns bereitgestellt haben, in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten oder die Übermittlung an einen anderen Verantwortlichen zu verlangen.</li>
+            <li><strong>Widerspruchsrecht (Art. 21 DSGVO):</strong> Sofern Ihre personenbezogenen Daten auf Grundlage von berechtigten Interessen gemäß Art. 6 Abs. 1 S. 1 lit. f DSGVO verarbeitet werden, haben Sie das Recht, gemäß Art. 21 DSGVO Widerspruch gegen die Verarbeitung Ihrer personenbezogenen Daten einzulegen, soweit dafür Gründe vorliegen, die sich aus Ihrer besonderen Situation ergeben.</li>
+            <li><strong>Recht auf Widerruf erteilter Einwilligungen (Art. 7 Abs. 3 DSGVO):</strong> Sie haben das Recht, eine einmal erteilte Einwilligung jederzeit uns gegenüber zu widerrufen. Dies hat zur Folge, dass wir die Datenverarbeitung, die auf dieser Einwilligung beruhte, für die Zukunft nicht mehr fortführen dürfen.</li>
+        </ul>
+        <p>Zur Geltendmachung Ihrer Rechte wenden Sie sich bitte an die oben genannte Kontaktadresse.</p>
+
+        <h2>7. Beschwerderecht bei der Aufsichtsbehörde</h2>
+        <p>Unbeschadet eines anderweitigen verwaltungsrechtlichen oder gerichtlichen Rechtsbehelfs steht Ihnen das Recht auf Beschwerde bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts, Ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes, zu, wenn Sie der Ansicht sind, dass die Verarbeitung der Sie betreffenden personenbezogenen Daten gegen die DSGVO verstößt (Art. 77 DSGVO).</p>
+        <p>Eine Liste der Datenschutzbehörden sowie deren Kontaktdaten können folgendem Link entnommen werden: <a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html" target="_blank" rel="noopener noreferrer">https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html</a>.</p>
+
+        <h2>8. Änderung dieser Datenschutzerklärung</h2>
+        <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen, z.B. bei der Einführung neuer Dienste. Für Ihren erneuten Besuch gilt dann die neue Datenschutzerklärung.</p>
+
+        <p>Stand: 21. April 2025</p>
+
+        <p><a href="index.html">Zurück zur Startseite</a></p>
+    </main>
+
+    <!-- Footer kommt später -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kontakt</h3>
+                <p>Email: info@dsm-kite.de</p>
+                <p>Daniela Sieck-Mitzloff<br>Johann-Hinrich-Fehrs-Str. 18<br>24623 Großenaspe</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul>
+                    <li><a href="impressum.html">Impressum</a></li>
+                    <li><a href="datenschutz.html">Datenschutz</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 KiTE® Methode. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+    <script src="bundle.js" defer></script> <!-- Falls nötig -->
+</body>
+</html> 
