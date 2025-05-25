@@ -485,8 +485,9 @@ footer {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: calc(var(--spacing-unit) * 2);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-unit);
+    margin-top: calc(var(--spacing-unit) * 2);
 }
 
 .pricing-card {
