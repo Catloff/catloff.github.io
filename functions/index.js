@@ -46,9 +46,12 @@ exports.handleNewBooking = functions.region("europe-west1") // Optional: Region 
         const customerEmail = bookingData.email; // Direkt aus bookingData.email
         const customerPhone = bookingData.phone || 'Keine Angabe'; // Direkt aus bookingData.phone
         const bookingDateRaw = bookingData.date?.toDate(); // Ist immer noch korrekt
-        // Extrahiere Datum und Zeit aus dem Timestamp
-        const bookingDate = bookingDateRaw ? bookingDateRaw.toLocaleDateString('de-DE') : 'Unbekanntes Datum';
-        const bookingTime = bookingDateRaw ? `${bookingDateRaw.getHours().toString().padStart(2, '0')}:${bookingDateRaw.getMinutes().toString().padStart(2, '0')}` : 'Unbekannte Zeit';
+        // Extrahiere Datum und Zeit aus dem Timestamp unter Berücksichtigung der deutschen Zeitzone
+        const optionsDate = { timeZone: 'Europe/Berlin', day: '2-digit', month: '2-digit', year: 'numeric' };
+        const optionsTime = { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hour12: false };
+
+        const bookingDate = bookingDateRaw ? new Intl.DateTimeFormat('de-DE', optionsDate).format(bookingDateRaw) : 'Unbekanntes Datum';
+        const bookingTime = bookingDateRaw ? new Intl.DateTimeFormat('de-DE', optionsTime).format(bookingDateRaw) : 'Unbekannte Zeit';
         const notes = bookingData.notes || 'Keine'; // Direkt aus bookingData.notes
         // const treatmentName = bookingData.treatment?.name || "Behandlung"; // Auskommentiert, da nicht verwendet/übermittelt
 
